@@ -75,7 +75,7 @@
 <span id="69">69</span>
 <span id="70">70</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">format_args</span>, <span class="ident">write</span>};
+<span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">format_args</span>, <span class="ident">write</span>, <span class="ident">CstFormatContext</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::parentheses::NeedsParentheses</span>;
 <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{
@@ -99,9 +99,9 @@
 
         <span class="kw">let</span> <span class="ident">l_paren_token</span> <span class="op">=</span> <span class="ident">l_paren_token</span><span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">expression</span> <span class="op">=</span> <span class="ident">expression</span><span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">comments</span> <span class="op">=</span> <span class="ident">f</span>.<span class="ident">context</span>().<span class="ident">comments</span>();
 
-        <span class="kw">let</span> <span class="ident">should_hug</span> <span class="op">=</span> <span class="op">!</span>(<span class="ident">expression</span>.<span class="ident">syntax</span>().<span class="ident">has_comments_direct</span>()
-            <span class="op">|</span><span class="op">|</span> <span class="ident">l_paren_token</span>.<span class="ident">has_trailing_comments</span>())
+        <span class="kw">let</span> <span class="ident">should_hug</span> <span class="op">=</span> <span class="op">!</span><span class="ident">comments</span>.<span class="ident">has_comments</span>(<span class="ident">expression</span>.<span class="ident">syntax</span>())
             <span class="op">&amp;&amp;</span> (<span class="macro">matches!</span>(
                 <span class="ident">expression</span>,
                 <span class="ident">JsAnyExpression::JsObjectExpression</span>(<span class="kw">_</span>) <span class="op">|</span> <span class="ident">JsAnyExpression::JsArrayExpression</span>(<span class="kw">_</span>)

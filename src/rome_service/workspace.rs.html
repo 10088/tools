@@ -455,15 +455,6 @@
 <span id="449">449</span>
 <span id="450">450</span>
 <span id="451">451</span>
-<span id="452">452</span>
-<span id="453">453</span>
-<span id="454">454</span>
-<span id="455">455</span>
-<span id="456">456</span>
-<span id="457">457</span>
-<span id="458">458</span>
-<span id="459">459</span>
-<span id="460">460</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The [Workspace] is the main entry point for high-level clients (the Rome</span>
 <span class="doccomment">//! CLI and Language Server) into the various language-specific services of the</span>
 <span class="doccomment">//! Rome toolchain (parser, formatter, analyzer ...)</span>
@@ -524,8 +515,6 @@
 <span class="kw">use</span> <span class="ident">rome_formatter::Printed</span>;
 <span class="kw">use</span> <span class="ident">rome_fs::RomePath</span>;
 <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{<span class="ident">TextRange</span>, <span class="ident">TextSize</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>)]</span>
-<span class="kw">use</span> <span class="ident">rome_rowan::TextRangeSchema</span>;
 <span class="kw">use</span> <span class="ident">rome_text_edit::Indel</span>;
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">borrow::Cow</span>, <span class="ident">panic::RefUnwindSafe</span>, <span class="ident">sync::Arc</span>};
 
@@ -616,7 +605,6 @@
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">derive</span>(<span class="ident">schemars::JsonSchema</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GetControlFlowGraphParams</span> {
     <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">RomePath</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">schemars</span>(<span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;u32&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="ident">cursor</span>: <span class="ident">TextSize</span>,
 }
 
@@ -657,7 +645,6 @@
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">derive</span>(<span class="ident">schemars::JsonSchema</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PullActionsParams</span> {
     <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">RomePath</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">schemars</span>(<span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;TextRangeSchema&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="ident">range</span>: <span class="ident">TextRange</span>,
 }
 
@@ -685,7 +672,6 @@
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">derive</span>(<span class="ident">schemars::JsonSchema</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormatRangeParams</span> {
     <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">RomePath</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">schemars</span>(<span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;TextRangeSchema&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="ident">range</span>: <span class="ident">TextRange</span>,
 }
 
@@ -693,7 +679,6 @@
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">derive</span>(<span class="ident">schemars::JsonSchema</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormatOnTypeParams</span> {
     <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">RomePath</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">schemars</span>(<span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;u32&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="ident">offset</span>: <span class="ident">TextSize</span>,
 }
 
@@ -732,7 +717,6 @@
     <span class="doccomment">/// Name of the rule that emitted this code action</span>
     <span class="kw">pub</span> <span class="ident">rule_name</span>: <span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, <span class="ident">str</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Source range at which this action was applied</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">schemars</span>(<span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;TextRangeSchema&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="ident">range</span>: <span class="ident">TextRange</span>,
 }
 
@@ -740,7 +724,6 @@
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">derive</span>(<span class="ident">schemars::JsonSchema</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RenameParams</span> {
     <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">RomePath</span>,
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">schemars</span>(<span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;u32&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="ident">symbol_at</span>: <span class="ident">TextSize</span>,
     <span class="kw">pub</span> <span class="ident">new_name</span>: <span class="ident">String</span>,
 }
@@ -749,7 +732,6 @@
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">derive</span>(<span class="ident">schemars::JsonSchema</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RenameResult</span> {
     <span class="doccomment">/// Range of source code modified by this rename operation</span>
-    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;schemars&quot;</span>, <span class="ident">schemars</span>(<span class="ident">with</span> <span class="op">=</span> <span class="string">&quot;TextRangeSchema&quot;</span>))]</span>
     <span class="kw">pub</span> <span class="ident">range</span>: <span class="ident">TextRange</span>,
     <span class="doccomment">/// List of text edit operations to apply on the source code</span>
     <span class="kw">pub</span> <span class="ident">indels</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Indel</span><span class="op">&gt;</span>,

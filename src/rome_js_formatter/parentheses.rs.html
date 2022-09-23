@@ -1087,6 +1087,7 @@
 <span id="1081">1081</span>
 <span id="1082">1082</span>
 <span id="1083">1083</span>
+<span id="1084">1084</span>
 </pre><pre class="rust"><code><span class="doccomment">//! JavaScript supports parenthesizing expressions, assignments, and TypeScript types.</span>
 <span class="doccomment">//! Parenthesizing an expression can be desired to change the precedence of an expression or to ease</span>
 <span class="doccomment">//! readability.</span>
@@ -1979,6 +1980,7 @@
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">tests</span> {
     <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::NeedsParentheses</span>;
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::transform</span>;
+    <span class="kw">use</span> <span class="ident">rome_diagnostics::file::FileId</span>;
     <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{<span class="ident">JsLanguage</span>, <span class="ident">SourceType</span>};
     <span class="kw">use</span> <span class="ident">rome_rowan::AstNode</span>;
 
@@ -1989,7 +1991,7 @@
         <span class="ident">index</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
         <span class="ident">source_type</span>: <span class="ident">SourceType</span>,
     ) {
-        <span class="kw">let</span> <span class="ident">parse</span> <span class="op">=</span> <span class="ident">rome_js_parser::parse</span>(<span class="ident">input</span>, <span class="number">0</span>, <span class="ident">source_type</span>);
+        <span class="kw">let</span> <span class="ident">parse</span> <span class="op">=</span> <span class="ident">rome_js_parser::parse</span>(<span class="ident">input</span>, <span class="ident">FileId::zero</span>(), <span class="ident">source_type</span>);
 
         <span class="kw">let</span> <span class="ident">diagnostics</span> <span class="op">=</span> <span class="ident">parse</span>.<span class="ident">diagnostics</span>();
         <span class="macro">assert!</span>(
@@ -2030,7 +2032,7 @@
         <span class="ident">index</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
         <span class="ident">source_type</span>: <span class="ident">SourceType</span>,
     ) {
-        <span class="kw">let</span> <span class="ident">parse</span> <span class="op">=</span> <span class="ident">rome_js_parser::parse</span>(<span class="ident">input</span>, <span class="number">0</span>, <span class="ident">source_type</span>);
+        <span class="kw">let</span> <span class="ident">parse</span> <span class="op">=</span> <span class="ident">rome_js_parser::parse</span>(<span class="ident">input</span>, <span class="ident">FileId::zero</span>(), <span class="ident">source_type</span>);
 
         <span class="kw">let</span> <span class="ident">diagnostics</span> <span class="op">=</span> <span class="ident">parse</span>.<span class="ident">diagnostics</span>();
         <span class="macro">assert!</span>(

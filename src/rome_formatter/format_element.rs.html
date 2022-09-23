@@ -1083,21 +1083,6 @@
 <span id="1077">1077</span>
 <span id="1078">1078</span>
 <span id="1079">1079</span>
-<span id="1080">1080</span>
-<span id="1081">1081</span>
-<span id="1082">1082</span>
-<span id="1083">1083</span>
-<span id="1084">1084</span>
-<span id="1085">1085</span>
-<span id="1086">1086</span>
-<span id="1087">1087</span>
-<span id="1088">1088</span>
-<span id="1089">1089</span>
-<span id="1090">1090</span>
-<span id="1091">1091</span>
-<span id="1092">1092</span>
-<span id="1093">1093</span>
-<span id="1094">1094</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::{<span class="ident">dynamic_text</span>, <span class="ident">format_with</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::printer::LineEnding</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{
@@ -1180,12 +1165,6 @@
     <span class="doccomment">/// Prevents that line suffixes move past this boundary. Forces the printer to print any pending</span>
     <span class="doccomment">/// line suffixes, potentially by inserting a hard line break.</span>
     <span class="ident">LineSuffixBoundary</span>,
-
-    <span class="doccomment">/// Special semantic element letting the printer and formatter know this is</span>
-    <span class="doccomment">/// a comment content, and it should only have a limited influence on the</span>
-    <span class="doccomment">/// formatting (for instance line breaks contained within will not cause</span>
-    <span class="doccomment">/// the parent group to break if this element is at the start of it).</span>
-    <span class="ident">Comment</span>(<span class="ident">Box</span><span class="op">&lt;</span>[<span class="ident">FormatElement</span>]<span class="op">&gt;</span>),
 
     <span class="doccomment">/// A token that tracks tokens/nodes that are printed as verbatim.</span>
     <span class="ident">Verbatim</span>(<span class="ident">Verbatim</span>),
@@ -1293,7 +1272,6 @@
                 <span class="ident">fmt</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;LineSuffix&quot;</span>).<span class="ident">field</span>(<span class="ident">content</span>).<span class="ident">finish</span>()
             }
             <span class="ident">FormatElement::LineSuffixBoundary</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;LineSuffixBoundary&quot;</span>),
-            <span class="ident">FormatElement::Comment</span>(<span class="ident">content</span>) =&gt; <span class="ident">fmt</span>.<span class="ident">debug_tuple</span>(<span class="string">&quot;Comment&quot;</span>).<span class="ident">field</span>(<span class="ident">content</span>).<span class="ident">finish</span>(),
             <span class="ident">FormatElement::Verbatim</span>(<span class="ident">verbatim</span>) =&gt; <span class="ident">fmt</span>
                 .<span class="ident">debug_tuple</span>(<span class="string">&quot;Verbatim&quot;</span>)
                 .<span class="ident">field</span>(<span class="kw-2">&amp;</span><span class="ident">verbatim</span>.<span class="ident">content</span>)
@@ -1504,10 +1482,6 @@
 <span class="kw">impl</span> <span class="ident">Interned</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">element</span>: <span class="ident">FormatElement</span>) -&gt; <span class="self">Self</span> {
         <span class="self">Self</span>(<span class="ident">Rc::new</span>(<span class="ident">element</span>))
-    }
-
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">try_unwrap</span>(<span class="ident">this</span>: <span class="ident">Interned</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FormatElement</span>, <span class="ident">Interned</span><span class="op">&gt;</span> {
-        <span class="ident">Rc::try_unwrap</span>(<span class="ident">this</span>.<span class="number">0</span>).<span class="ident">map_err</span>(<span class="ident">Interned</span>)
     }
 }
 
@@ -1775,7 +1749,6 @@
             <span class="ident">FormatElement::Group</span>(<span class="ident">Group</span> { <span class="ident">content</span>, .. })
             <span class="op">|</span> <span class="ident">FormatElement::ConditionalGroupContent</span>(<span class="ident">ConditionalGroupContent</span> { <span class="ident">content</span>, .. })
             <span class="op">|</span> <span class="ident">FormatElement::IndentIfGroupBreaks</span>(<span class="ident">IndentIfGroupBreaks</span> { <span class="ident">content</span>, .. })
-            <span class="op">|</span> <span class="ident">FormatElement::Comment</span>(<span class="ident">content</span>)
             <span class="op">|</span> <span class="ident">FormatElement::Fill</span>(<span class="ident">content</span>)
             <span class="op">|</span> <span class="ident">FormatElement::Verbatim</span>(<span class="ident">Verbatim</span> { <span class="ident">content</span>, .. })
             <span class="op">|</span> <span class="ident">FormatElement::Label</span>(<span class="ident">Label</span> { <span class="ident">content</span>, .. })
@@ -1805,13 +1778,13 @@
 
     <span class="doccomment">/// Utility function to get the &quot;last element&quot; of a [FormatElement], recursing</span>
     <span class="doccomment">/// into lists and groups to find the last element that&#39;s not</span>
-    <span class="doccomment">/// a line break, or a comment.</span>
+    <span class="doccomment">/// a line break</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">last_element</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">FormatElement</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">FormatElement::List</span>(<span class="ident">list</span>) =&gt; {
                 <span class="ident">list</span>.<span class="ident">iter</span>().<span class="ident">rev</span>().<span class="ident">find_map</span>(<span class="op">|</span><span class="ident">element</span><span class="op">|</span> <span class="ident">element</span>.<span class="ident">last_element</span>())
             }
-            <span class="ident">FormatElement::Line</span>(<span class="kw">_</span>) <span class="op">|</span> <span class="ident">FormatElement::Comment</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">None</span>,
+            <span class="ident">FormatElement::Line</span>(<span class="kw">_</span>) =&gt; <span class="prelude-val">None</span>,
 
             <span class="ident">FormatElement::Group</span>(<span class="ident">Group</span> { <span class="ident">content</span>, .. }) <span class="op">|</span> <span class="ident">FormatElement::Indent</span>(<span class="ident">content</span>) =&gt; {
                 <span class="ident">content</span>.<span class="ident">iter</span>().<span class="ident">rev</span>().<span class="ident">find_map</span>(<span class="ident">FormatElement::last_element</span>)
@@ -1962,9 +1935,6 @@
             }
             <span class="ident">FormatElement::LineSuffix</span>(<span class="ident">line_suffix</span>) =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">text</span>(<span class="string">&quot;line_suffix(&quot;</span>), <span class="ident">line_suffix</span>.<span class="ident">as_ref</span>(), <span class="ident">text</span>(<span class="string">&quot;)&quot;</span>)])
-            }
-            <span class="ident">FormatElement::Comment</span>(<span class="ident">content</span>) =&gt; {
-                <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">text</span>(<span class="string">&quot;comment(&quot;</span>), <span class="ident">content</span>.<span class="ident">as_ref</span>(), <span class="ident">text</span>(<span class="string">&quot;)&quot;</span>)])
             }
             <span class="ident">FormatElement::Verbatim</span>(<span class="ident">verbatim</span>) =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">text</span>(<span class="string">&quot;verbatim(&quot;</span>), <span class="ident">verbatim</span>.<span class="ident">content</span>.<span class="ident">as_ref</span>(), <span class="ident">text</span>(<span class="string">&quot;)&quot;</span>)])

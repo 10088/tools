@@ -47,8 +47,26 @@
 <span id="41">41</span>
 <span id="42">42</span>
 <span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rome_formatter::write</span>;
+<span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">format_args</span>, <span class="ident">write</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils::FormatWithSemicolon</span>;
 
@@ -73,21 +91,39 @@
                 <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">type_token</span>.<span class="ident">format</span>(), <span class="ident">space</span>()])<span class="question-mark">?</span>;
             }
 
-            <span class="macro">write!</span>(
-                <span class="ident">f</span>,
-                [<span class="ident">format_delimited</span>(
-                    <span class="ident">l_curly_token</span>.<span class="ident">as_ref</span>()<span class="question-mark">?</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">specifiers</span>.<span class="ident">format</span>(),
-                    <span class="ident">r_curly_token</span>.<span class="ident">as_ref</span>()<span class="question-mark">?</span>
-                )
-                .<span class="ident">soft_block_spaces</span>()]
-            )
+            <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">l_curly_token</span>.<span class="ident">format</span>()])<span class="question-mark">?</span>;
+
+            <span class="kw">if</span> <span class="ident">specifiers</span>.<span class="ident">is_empty</span>() {
+                <span class="macro">write!</span>(
+                    <span class="ident">f</span>,
+                    [<span class="ident">format_dangling_comments</span>(<span class="ident">node</span>.<span class="ident">syntax</span>()).<span class="ident">with_block_indent</span>()]
+                )<span class="question-mark">?</span>;
+            } <span class="kw">else</span> {
+                <span class="macro">write!</span>(
+                    <span class="ident">f</span>,
+                    [<span class="ident">group</span>(<span class="kw-2">&amp;</span><span class="macro">format_args!</span>[
+                        <span class="ident">soft_line_indent_or_space</span>(<span class="kw-2">&amp;</span><span class="ident">specifiers</span>.<span class="ident">format</span>()),
+                        <span class="ident">soft_line_break_or_space</span>(),
+                    ])]
+                )<span class="question-mark">?</span>;
+            }
+
+            <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">r_curly_token</span>.<span class="ident">format</span>()])
         });
 
         <span class="macro">write!</span>(
             <span class="ident">f</span>,
             [<span class="ident">FormatWithSemicolon::new</span>(<span class="kw-2">&amp;</span><span class="ident">content</span>, <span class="ident">semicolon_token</span>.<span class="ident">as_ref</span>())]
         )
+    }
+
+    <span class="kw">fn</span> <span class="ident">fmt_dangling_comments</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="ident">JsExportNamedClause</span>,
+        <span class="kw">_</span>: <span class="kw-2">&amp;mut</span> <span class="ident">JsFormatter</span>,
+    ) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="comment">// Handled as part of `fmt_fields`</span>
+        <span class="prelude-val">Ok</span>(())
     }
 }
 </code></pre></div>

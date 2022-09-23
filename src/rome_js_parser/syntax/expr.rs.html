@@ -2042,6 +2042,23 @@
 <span id="2036">2036</span>
 <span id="2037">2037</span>
 <span id="2038">2038</span>
+<span id="2039">2039</span>
+<span id="2040">2040</span>
+<span id="2041">2041</span>
+<span id="2042">2042</span>
+<span id="2043">2043</span>
+<span id="2044">2044</span>
+<span id="2045">2045</span>
+<span id="2046">2046</span>
+<span id="2047">2047</span>
+<span id="2048">2048</span>
+<span id="2049">2049</span>
+<span id="2050">2050</span>
+<span id="2051">2051</span>
+<span id="2052">2052</span>
+<span id="2053">2053</span>
+<span id="2054">2054</span>
+<span id="2055">2055</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Expressions, these include `this`, identifiers, arrays, objects,</span>
 <span class="doccomment">//! binary expressions, unary expressions, and more.</span>
 <span class="doccomment">//!</span>
@@ -2812,6 +2829,23 @@
         .<span class="ident">or_add_diagnostic</span>(<span class="ident">p</span>, <span class="ident">expected_expression</span>)
         .<span class="ident">map</span>(<span class="op">|</span><span class="ident">expr</span><span class="op">|</span> <span class="ident">parse_member_expression_rest</span>(<span class="ident">p</span>, <span class="ident">expr</span>, <span class="ident">context</span>, <span class="bool-val">false</span>, <span class="kw-2">&amp;mut</span> <span class="bool-val">false</span>))
     {
+        <span class="comment">// test_err ts invalid_optional_chain_from_new_expressions</span>
+        <span class="comment">// new Test&lt;string&gt;?.test();</span>
+        <span class="comment">// new Test?.test();</span>
+        <span class="comment">// new A.b?.c()</span>
+        <span class="comment">// new (A.b)?.c()</span>
+        <span class="comment">// new (A.b?.()).c()</span>
+        <span class="comment">// new A.b?.()()</span>
+        <span class="kw">if</span> <span class="ident">p</span>.<span class="ident">at</span>(<span class="macro">T!</span>[<span class="question-mark">?</span>.]) {
+            <span class="kw">let</span> <span class="ident">error</span> <span class="op">=</span> <span class="ident">p</span>
+                .<span class="ident">err_builder</span>(<span class="string">&quot;Invalid optional chain from new expression.&quot;</span>)
+                .<span class="ident">primary</span>(
+                    <span class="ident">p</span>.<span class="ident">cur_range</span>(),
+                    <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;Did you mean to call &#39;{}()&#39;?&quot;</span>, <span class="ident">lhs</span>.<span class="ident">text</span>(<span class="ident">p</span>)),
+                );
+
+            <span class="ident">p</span>.<span class="ident">error</span>(<span class="ident">error</span>);
+        }
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">TS_INSTANTIATION_EXPRESSION</span> <span class="op">=</span> <span class="ident">lhs</span>.<span class="ident">kind</span>() {
             <span class="ident">lhs</span>.<span class="ident">undo_completion</span>(<span class="ident">p</span>).<span class="ident">abandon</span>(<span class="ident">p</span>)
         };

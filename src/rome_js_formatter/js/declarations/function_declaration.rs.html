@@ -221,17 +221,6 @@
 <span id="215">215</span>
 <span id="216">216</span>
 <span id="217">217</span>
-<span id="218">218</span>
-<span id="219">219</span>
-<span id="220">220</span>
-<span id="221">221</span>
-<span id="222">222</span>
-<span id="223">223</span>
-<span id="224">224</span>
-<span id="225">225</span>
-<span id="226">226</span>
-<span id="227">227</span>
-<span id="228">228</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use</span> <span class="ident">rome_formatter::write</span>;
@@ -441,21 +430,10 @@
     <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">parameter_count</span> <span class="op">!</span><span class="op">=</span> <span class="number">1</span> {
         <span class="bool-val">false</span>
     } <span class="kw">else</span> {
-        <span class="comment">// TODO https://github.com/rome/tools/issues/2768</span>
-        <span class="comment">// THIS is a hack that is necessary to avoid that the formatter doesn&#39;t insert a space</span>
-        <span class="comment">// between `)` and the `:` of the return type annotation IF there&#39;s a an inline comment</span>
-        <span class="comment">// after the last comment that has been written. This can be deleted once the comments refactor lands.</span>
-        <span class="kw">let</span> <span class="ident">is_last_content_inline_comment</span> <span class="op">=</span> <span class="ident">f</span>.<span class="ident">state</span>().<span class="ident">is_last_content_inline_comment</span>();
-        <span class="ident">f</span>.<span class="ident">state_mut</span>().<span class="ident">set_last_content_inline_comment</span>(<span class="bool-val">false</span>);
-
-        <span class="kw">let</span> <span class="ident">group</span> <span class="op">=</span> <span class="macro">matches!</span>(
+        <span class="macro">matches!</span>(
             <span class="ident">return_type</span>,
             <span class="ident">TsAnyReturnType::TsType</span>(<span class="ident">TsType::TsObjectType</span>(<span class="kw">_</span>) <span class="op">|</span> <span class="ident">TsType::TsMappedType</span>(<span class="kw">_</span>))
-        ) <span class="op">|</span><span class="op">|</span> <span class="ident">formatted_return_type</span>.<span class="ident">inspect</span>(<span class="ident">f</span>)<span class="question-mark">?</span>.<span class="ident">will_break</span>();
-
-        <span class="ident">f</span>.<span class="ident">state_mut</span>()
-            .<span class="ident">set_last_content_inline_comment</span>(<span class="ident">is_last_content_inline_comment</span>);
-        <span class="ident">group</span>
+        ) <span class="op">|</span><span class="op">|</span> <span class="ident">formatted_return_type</span>.<span class="ident">inspect</span>(<span class="ident">f</span>)<span class="question-mark">?</span>.<span class="ident">will_break</span>()
     };
 
     <span class="prelude-val">Ok</span>(<span class="ident">result</span>)

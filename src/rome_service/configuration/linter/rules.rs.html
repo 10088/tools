@@ -543,6 +543,16 @@
 <span id="537">537</span>
 <span id="538">538</span>
 <span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Generated file, do not edit by hand, see `xtask/codegen`</span>
 
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">ConfigurationError</span>, <span class="ident">RomeError</span>, <span class="ident">RuleConfiguration</span>};
@@ -760,7 +770,6 @@
     <span class="ident">no_unsafe_negation</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
     <span class="ident">no_unused_template_literal</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
     <span class="ident">use_block_statements</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
-    <span class="ident">use_optional_chain</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
     <span class="ident">use_simplified_logic_expression</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
     <span class="ident">use_single_case_statement</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
     <span class="ident">use_single_var_declarator</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
@@ -770,7 +779,7 @@
 }
 <span class="kw">impl</span> <span class="ident">Correctness</span> {
     <span class="kw">const</span> <span class="ident">CATEGORY_NAME</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;correctness&quot;</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const</span> <span class="ident">CATEGORY_RULES</span>: [<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>; <span class="number">29</span>] <span class="op">=</span> [
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const</span> <span class="ident">CATEGORY_RULES</span>: [<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>; <span class="number">28</span>] <span class="op">=</span> [
         <span class="string">&quot;noArguments&quot;</span>,
         <span class="string">&quot;noAsyncPromiseExecutor&quot;</span>,
         <span class="string">&quot;noCatchAssign&quot;</span>,
@@ -793,7 +802,6 @@
         <span class="string">&quot;noUnsafeNegation&quot;</span>,
         <span class="string">&quot;noUnusedTemplateLiteral&quot;</span>,
         <span class="string">&quot;useBlockStatements&quot;</span>,
-        <span class="string">&quot;useOptionalChain&quot;</span>,
         <span class="string">&quot;useSimplifiedLogicExpression&quot;</span>,
         <span class="string">&quot;useSingleCaseStatement&quot;</span>,
         <span class="string">&quot;useSingleVarDeclarator&quot;</span>,
@@ -801,7 +809,7 @@
         <span class="string">&quot;useValidTypeof&quot;</span>,
         <span class="string">&quot;useWhile&quot;</span>,
     ];
-    <span class="kw">const</span> <span class="ident">RECOMMENDED_RULES</span>: [<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>; <span class="number">29</span>] <span class="op">=</span> [
+    <span class="kw">const</span> <span class="ident">RECOMMENDED_RULES</span>: [<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>; <span class="number">28</span>] <span class="op">=</span> [
         <span class="string">&quot;noArguments&quot;</span>,
         <span class="string">&quot;noAsyncPromiseExecutor&quot;</span>,
         <span class="string">&quot;noCatchAssign&quot;</span>,
@@ -824,7 +832,6 @@
         <span class="string">&quot;noUnsafeNegation&quot;</span>,
         <span class="string">&quot;noUnusedTemplateLiteral&quot;</span>,
         <span class="string">&quot;useBlockStatements&quot;</span>,
-        <span class="string">&quot;useOptionalChain&quot;</span>,
         <span class="string">&quot;useSimplifiedLogicExpression&quot;</span>,
         <span class="string">&quot;useSingleCaseStatement&quot;</span>,
         <span class="string">&quot;useSingleVarDeclarator&quot;</span>,
@@ -832,7 +839,7 @@
         <span class="string">&quot;useValidTypeof&quot;</span>,
         <span class="string">&quot;useWhile&quot;</span>,
     ];
-    <span class="kw">const</span> <span class="ident">RECOMMENDED_RULES_AS_FILTERS</span>: [<span class="ident">RuleFilter</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span>; <span class="number">29</span>] <span class="op">=</span> [
+    <span class="kw">const</span> <span class="ident">RECOMMENDED_RULES_AS_FILTERS</span>: [<span class="ident">RuleFilter</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span>; <span class="number">28</span>] <span class="op">=</span> [
         <span class="ident">RuleFilter::Rule</span>(<span class="string">&quot;correctness&quot;</span>, <span class="ident"><span class="self">Self</span>::CATEGORY_RULES</span>[<span class="number">0</span>]),
         <span class="ident">RuleFilter::Rule</span>(<span class="string">&quot;correctness&quot;</span>, <span class="ident"><span class="self">Self</span>::CATEGORY_RULES</span>[<span class="number">1</span>]),
         <span class="ident">RuleFilter::Rule</span>(<span class="string">&quot;correctness&quot;</span>, <span class="ident"><span class="self">Self</span>::CATEGORY_RULES</span>[<span class="number">2</span>]),
@@ -861,7 +868,6 @@
         <span class="ident">RuleFilter::Rule</span>(<span class="string">&quot;correctness&quot;</span>, <span class="ident"><span class="self">Self</span>::CATEGORY_RULES</span>[<span class="number">25</span>]),
         <span class="ident">RuleFilter::Rule</span>(<span class="string">&quot;correctness&quot;</span>, <span class="ident"><span class="self">Self</span>::CATEGORY_RULES</span>[<span class="number">26</span>]),
         <span class="ident">RuleFilter::Rule</span>(<span class="string">&quot;correctness&quot;</span>, <span class="ident"><span class="self">Self</span>::CATEGORY_RULES</span>[<span class="number">27</span>]),
-        <span class="ident">RuleFilter::Rule</span>(<span class="string">&quot;correctness&quot;</span>, <span class="ident"><span class="self">Self</span>::CATEGORY_RULES</span>[<span class="number">28</span>]),
     ];
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_recommended</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="op">!</span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="ident">recommended</span>, <span class="prelude-val">Some</span>(<span class="bool-val">false</span>)) }
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_enabled_rules</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">IndexSet</span><span class="op">&lt;</span><span class="ident">RuleFilter</span><span class="op">&gt;</span> {
@@ -888,7 +894,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_recommended_rule</span>(<span class="ident">rule_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">bool</span> {
         <span class="ident"><span class="self">Self</span>::RECOMMENDED_RULES</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">rule_name</span>)
     }
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">recommended_rules_as_filters</span>() -&gt; [<span class="ident">RuleFilter</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span>; <span class="number">29</span>] {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">recommended_rules_as_filters</span>() -&gt; [<span class="ident">RuleFilter</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span>; <span class="number">28</span>] {
         <span class="ident"><span class="self">Self</span>::RECOMMENDED_RULES_AS_FILTERS</span>
     }
 }
@@ -932,17 +938,31 @@
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">dead_code</span>)]</span>
 <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="string">r&quot; A list of rules that belong to this group&quot;</span>]</span>
 <span class="kw">struct</span> <span class="ident">NurserySchema</span> {
+    <span class="ident">no_dangerously_set_inner_html</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
+    <span class="ident">no_new_symbol</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
+    <span class="ident">no_render_return_value</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
     <span class="ident">no_unreachable</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
     <span class="ident">no_unused_variables</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
+    <span class="ident">no_useless_fragments</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
+    <span class="ident">use_button_type</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
     <span class="ident">use_camel_case</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
+    <span class="ident">use_optional_chain</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleConfiguration</span><span class="op">&gt;</span>,
 }
 <span class="kw">impl</span> <span class="ident">Nursery</span> {
     <span class="kw">const</span> <span class="ident">CATEGORY_NAME</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;nursery&quot;</span>;
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const</span> <span class="ident">CATEGORY_RULES</span>: [<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>; <span class="number">3</span>] <span class="op">=</span>
-        [<span class="string">&quot;noUnreachable&quot;</span>, <span class="string">&quot;noUnusedVariables&quot;</span>, <span class="string">&quot;useCamelCase&quot;</span>];
-    <span class="kw">const</span> <span class="ident">RECOMMENDED_RULES</span>: [<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>; <span class="number">1</span>] <span class="op">=</span> [<span class="string">&quot;noUnusedVariables&quot;</span>];
-    <span class="kw">const</span> <span class="ident">RECOMMENDED_RULES_AS_FILTERS</span>: [<span class="ident">RuleFilter</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span>; <span class="number">1</span>] <span class="op">=</span>
-        [<span class="ident">RuleFilter::Rule</span>(<span class="string">&quot;nursery&quot;</span>, <span class="ident"><span class="self">Self</span>::CATEGORY_RULES</span>[<span class="number">1</span>])];
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">const</span> <span class="ident">CATEGORY_RULES</span>: [<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>; <span class="number">9</span>] <span class="op">=</span> [
+        <span class="string">&quot;noDangerouslySetInnerHtml&quot;</span>,
+        <span class="string">&quot;noNewSymbol&quot;</span>,
+        <span class="string">&quot;noRenderReturnValue&quot;</span>,
+        <span class="string">&quot;noUnreachable&quot;</span>,
+        <span class="string">&quot;noUnusedVariables&quot;</span>,
+        <span class="string">&quot;noUselessFragments&quot;</span>,
+        <span class="string">&quot;useButtonType&quot;</span>,
+        <span class="string">&quot;useCamelCase&quot;</span>,
+        <span class="string">&quot;useOptionalChain&quot;</span>,
+    ];
+    <span class="kw">const</span> <span class="ident">RECOMMENDED_RULES</span>: [<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>; <span class="number">0</span>] <span class="op">=</span> [];
+    <span class="kw">const</span> <span class="ident">RECOMMENDED_RULES_AS_FILTERS</span>: [<span class="ident">RuleFilter</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span>; <span class="number">0</span>] <span class="op">=</span> [];
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_recommended</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> { <span class="op">!</span><span class="macro">matches!</span>(<span class="self">self</span>.<span class="ident">recommended</span>, <span class="prelude-val">Some</span>(<span class="bool-val">false</span>)) }
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">get_enabled_rules</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">IndexSet</span><span class="op">&lt;</span><span class="ident">RuleFilter</span><span class="op">&gt;</span> {
         <span class="ident">IndexSet::from_iter</span>(<span class="self">self</span>.<span class="ident">rules</span>.<span class="ident">iter</span>().<span class="ident">filter_map</span>(<span class="op">|</span>(<span class="ident">key</span>, <span class="ident">conf</span>)<span class="op">|</span> {
@@ -968,7 +988,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_recommended_rule</span>(<span class="ident">rule_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">bool</span> {
         <span class="ident"><span class="self">Self</span>::RECOMMENDED_RULES</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">rule_name</span>)
     }
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">recommended_rules_as_filters</span>() -&gt; [<span class="ident">RuleFilter</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span>; <span class="number">1</span>] {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">recommended_rules_as_filters</span>() -&gt; [<span class="ident">RuleFilter</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span><span class="op">&gt;</span>; <span class="number">0</span>] {
         <span class="ident"><span class="self">Self</span>::RECOMMENDED_RULES_AS_FILTERS</span>
     }
 }

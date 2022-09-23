@@ -795,6 +795,118 @@
 <span id="789">789</span>
 <span id="790">790</span>
 <span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
+<span id="817">817</span>
+<span id="818">818</span>
+<span id="819">819</span>
+<span id="820">820</span>
+<span id="821">821</span>
+<span id="822">822</span>
+<span id="823">823</span>
+<span id="824">824</span>
+<span id="825">825</span>
+<span id="826">826</span>
+<span id="827">827</span>
+<span id="828">828</span>
+<span id="829">829</span>
+<span id="830">830</span>
+<span id="831">831</span>
+<span id="832">832</span>
+<span id="833">833</span>
+<span id="834">834</span>
+<span id="835">835</span>
+<span id="836">836</span>
+<span id="837">837</span>
+<span id="838">838</span>
+<span id="839">839</span>
+<span id="840">840</span>
+<span id="841">841</span>
+<span id="842">842</span>
+<span id="843">843</span>
+<span id="844">844</span>
+<span id="845">845</span>
+<span id="846">846</span>
+<span id="847">847</span>
+<span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
+<span id="866">866</span>
+<span id="867">867</span>
+<span id="868">868</span>
+<span id="869">869</span>
+<span id="870">870</span>
+<span id="871">871</span>
+<span id="872">872</span>
+<span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
+<span id="885">885</span>
+<span id="886">886</span>
+<span id="887">887</span>
+<span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
+<span id="893">893</span>
+<span id="894">894</span>
+<span id="895">895</span>
+<span id="896">896</span>
+<span id="897">897</span>
+<span id="898">898</span>
+<span id="899">899</span>
+<span id="900">900</span>
+<span id="901">901</span>
+<span id="902">902</span>
+<span id="903">903</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Rome&#39;s official JavaScript formatter.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## Implement the formatter</span>
@@ -1049,7 +1161,7 @@
 <span class="kw">mod</span> <span class="ident">check_reformat</span>;
 <span class="attribute">#[<span class="ident">rustfmt::skip</span>]</span>
 <span class="kw">mod</span> <span class="ident">generated</span>;
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod</span> <span class="ident">builders</span>;
+<span class="kw">mod</span> <span class="ident">builders</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">comments</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">context</span>;
 <span class="kw">mod</span> <span class="ident">parentheses</span>;
@@ -1058,7 +1170,7 @@
 
 <span class="kw">use</span> <span class="ident">rome_formatter::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">rome_formatter</span>::{
-    <span class="ident">write</span>, <span class="ident">Comments</span>, <span class="ident">CstFormatContext</span>, <span class="ident">Format</span>, <span class="ident">FormatLanguage</span>, <span class="ident">TransformSourceMap</span>,
+    <span class="ident">comments::Comments</span>, <span class="ident">write</span>, <span class="ident">CstFormatContext</span>, <span class="ident">Format</span>, <span class="ident">FormatLanguage</span>, <span class="ident">TransformSourceMap</span>,
 };
 <span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">Buffer</span>, <span class="ident">FormatOwnedWithRule</span>, <span class="ident">FormatRefWithRule</span>, <span class="ident">Formatted</span>, <span class="ident">Printed</span>};
 <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{
@@ -1068,11 +1180,11 @@
 <span class="kw">use</span> <span class="ident">rome_rowan::TextRange</span>;
 <span class="kw">use</span> <span class="ident">rome_rowan</span>::{<span class="ident">AstNode</span>, <span class="ident">SyntaxNode</span>};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::builders</span>::{<span class="ident">format_parenthesize</span>, <span class="ident">format_suppressed_node</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::comments::JsCommentStyle</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::context</span>::{<span class="ident">JsFormatContext</span>, <span class="ident">JsFormatOptions</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::cst::FormatJsSyntaxNode</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::syntax_rewriter::transform</span>;
+<span class="kw">use</span> <span class="ident">rome_formatter::trivia::format_skipped_token_trivia</span>;
 <span class="kw">use</span> <span class="ident">std::iter::FusedIterator</span>;
 <span class="kw">use</span> <span class="ident">std::marker::PhantomData</span>;
 
@@ -1216,23 +1328,32 @@
 {
 }
 
+<span class="doccomment">/// Rule for formatting a JavaScript [AstNode].</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FormatNodeRule</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">N</span>: <span class="ident">AstNode</span><span class="op">&lt;</span><span class="ident">Language</span> <span class="op">=</span> <span class="ident">JsLanguage</span><span class="op">&gt;</span>,
 {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="kw-2">&amp;</span><span class="ident">N</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">JsFormatter</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">syntax</span> <span class="op">=</span> <span class="ident">node</span>.<span class="ident">syntax</span>();
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_suppressed</span>(<span class="ident">node</span>, <span class="ident">f</span>) {
+            <span class="kw">return</span> <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">format_suppressed_node</span>(<span class="ident">node</span>.<span class="ident">syntax</span>())]);
+        }
 
-        <span class="kw">if</span> <span class="ident">f</span>.<span class="ident">context</span>().<span class="ident">comments</span>().<span class="ident">is_suppressed</span>(<span class="ident">syntax</span>) {
-            <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">format_suppressed_node</span>(<span class="ident">syntax</span>)])
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">needs_parentheses</span>(<span class="ident">node</span>) {
+        <span class="self">self</span>.<span class="ident">fmt_leading_comments</span>(<span class="ident">node</span>, <span class="ident">f</span>)<span class="question-mark">?</span>;
+        <span class="self">self</span>.<span class="ident">fmt_node</span>(<span class="ident">node</span>, <span class="ident">f</span>)<span class="question-mark">?</span>;
+        <span class="self">self</span>.<span class="ident">fmt_dangling_comments</span>(<span class="ident">node</span>, <span class="ident">f</span>)<span class="question-mark">?</span>;
+        <span class="self">self</span>.<span class="ident">fmt_trailing_comments</span>(<span class="ident">node</span>, <span class="ident">f</span>)
+    }
+
+    <span class="doccomment">/// Formats the node without comments. Ignores any suppression comments.</span>
+    <span class="kw">fn</span> <span class="ident">fmt_node</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="kw-2">&amp;</span><span class="ident">N</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">JsFormatter</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">needs_parentheses</span>(<span class="ident">node</span>) {
             <span class="macro">write!</span>(
                 <span class="ident">f</span>,
-                [<span class="ident">format_parenthesize</span>(
-                    <span class="ident">node</span>.<span class="ident">syntax</span>().<span class="ident">first_token</span>().<span class="ident">as_ref</span>(),
-                    <span class="kw-2">&amp;</span><span class="ident">format_once</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">fmt_fields</span>(<span class="ident">node</span>, <span class="ident">f</span>)),
-                    <span class="ident">node</span>.<span class="ident">syntax</span>().<span class="ident">last_token</span>().<span class="ident">as_ref</span>(),
-                )]
+                [
+                    <span class="ident">text</span>(<span class="string">&quot;(&quot;</span>),
+                    <span class="ident">format_once</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">fmt_fields</span>(<span class="ident">node</span>, <span class="ident">f</span>)),
+                    <span class="ident">text</span>(<span class="string">&quot;)&quot;</span>),
+                ]
             )
         } <span class="kw">else</span> {
             <span class="self">self</span>.<span class="ident">fmt_fields</span>(<span class="ident">node</span>, <span class="ident">f</span>)
@@ -1246,6 +1367,50 @@
     <span class="kw">fn</span> <span class="ident">needs_parentheses</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="ident">N</span>) -&gt; <span class="ident">bool</span> {
         <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">item</span>;
         <span class="bool-val">false</span>
+    }
+
+    <span class="doccomment">/// Returns `true` if the node has a suppression comment and should use the same formatting as in the source document.</span>
+    <span class="kw">fn</span> <span class="ident">is_suppressed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="kw-2">&amp;</span><span class="ident">N</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="ident">JsFormatter</span>) -&gt; <span class="ident">bool</span> {
+        <span class="ident">f</span>.<span class="ident">context</span>().<span class="ident">comments</span>().<span class="ident">is_suppressed</span>(<span class="ident">node</span>.<span class="ident">syntax</span>())
+    }
+
+    <span class="doccomment">/// Formats the [leading comments](rome_formatter::comments#leading-comments) of the node.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// You may want to override this method if you want to manually handle the formatting of comments</span>
+    <span class="doccomment">/// inside of the `fmt_fields` method or customize the formatting of the leading comments.</span>
+    <span class="kw">fn</span> <span class="ident">fmt_leading_comments</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="kw-2">&amp;</span><span class="ident">N</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">JsFormatter</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="ident">format_leading_comments</span>(<span class="ident">node</span>.<span class="ident">syntax</span>()).<span class="ident">fmt</span>(<span class="ident">f</span>)
+    }
+
+    <span class="doccomment">/// Formats the [dangling comments](rome_formatter::comments#dangling-comments) of the node.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// You should override this method if the node handled by this rule can have dangling comments because the</span>
+    <span class="doccomment">/// default implementation formats the dangling comments at the end of the node, which isn&#39;t ideal but ensures that</span>
+    <span class="doccomment">/// no comments are dropped.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// A node can have dangling comments if all its children are tokens or if all node childrens are optional.</span>
+    <span class="kw">fn</span> <span class="ident">fmt_dangling_comments</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="kw-2">&amp;</span><span class="ident">N</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">JsFormatter</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="ident">format_dangling_comments</span>(<span class="ident">node</span>.<span class="ident">syntax</span>())
+            .<span class="ident">with_soft_block_indent</span>()
+            .<span class="ident">fmt</span>(<span class="ident">f</span>)
+    }
+
+    <span class="doccomment">/// Formats the [trailing comments](rome_formatter::comments#trailing-comments) of the node.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// You may want to override this method if you want to manually handle the formatting of comments</span>
+    <span class="doccomment">/// inside of the `fmt_fields` method or customize the formatting of the trailing comments.</span>
+    <span class="kw">fn</span> <span class="ident">fmt_trailing_comments</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="kw-2">&amp;</span><span class="ident">N</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">JsFormatter</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="ident">format_trailing_comments</span>(<span class="ident">node</span>.<span class="ident">syntax</span>()).<span class="ident">fmt</span>(<span class="ident">f</span>)
+    }
+}
+
+<span class="doccomment">/// Rule for formatting an unknown node.</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">FormatUnknownNodeRule</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">N</span>: <span class="ident">AstNode</span><span class="op">&lt;</span><span class="ident">Language</span> <span class="op">=</span> <span class="ident">JsLanguage</span><span class="op">&gt;</span>,
+{
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="kw-2">&amp;</span><span class="ident">N</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">JsFormatter</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="ident">format_unknown_node</span>(<span class="ident">node</span>.<span class="ident">syntax</span>()).<span class="ident">fmt</span>(<span class="ident">f</span>)
     }
 }
 
@@ -1261,9 +1426,8 @@
         <span class="macro">write!</span>(
             <span class="ident">f</span>,
             [
-                <span class="ident">format_leading_trivia</span>(<span class="ident">token</span>),
+                <span class="ident">format_skipped_token_trivia</span>(<span class="ident">token</span>),
                 <span class="ident">format_trimmed_token</span>(<span class="ident">token</span>),
-                <span class="ident">format_trailing_trivia</span>(<span class="ident">token</span>),
             ]
         )
     }
@@ -1299,10 +1463,6 @@
     <span class="kw">type</span> <span class="ident">Context</span> <span class="op">=</span> <span class="ident">JsFormatContext</span>;
     <span class="kw">type</span> <span class="ident">CommentStyle</span> <span class="op">=</span> <span class="ident">JsCommentStyle</span>;
     <span class="kw">type</span> <span class="ident">FormatRule</span> <span class="op">=</span> <span class="ident">FormatJsSyntaxNode</span>;
-
-    <span class="kw">fn</span> <span class="ident">comment_style</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident"><span class="self">Self</span>::CommentStyle</span> {
-        <span class="ident">JsCommentStyle</span>
-    }
 
     <span class="kw">fn</span> <span class="ident">transform</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -1389,6 +1549,7 @@
     <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">format_node</span>, <span class="ident">format_range</span>};
 
     <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::context::JsFormatOptions</span>;
+    <span class="kw">use</span> <span class="ident">rome_diagnostics::file::FileId</span>;
     <span class="kw">use</span> <span class="ident">rome_formatter::IndentStyle</span>;
     <span class="kw">use</span> <span class="ident">rome_js_parser</span>::{<span class="ident">parse</span>, <span class="ident">parse_script</span>};
     <span class="kw">use</span> <span class="ident">rome_js_syntax::SourceType</span>;
@@ -1426,7 +1587,7 @@ while(
         <span class="kw">let</span> <span class="ident">range_start</span> <span class="op">=</span> <span class="ident">TextSize::try_from</span>(<span class="ident">input</span>.<span class="ident">find</span>(<span class="string">&quot;let&quot;</span>).<span class="ident">unwrap</span>() <span class="op">-</span> <span class="number">2</span>).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">range_end</span> <span class="op">=</span> <span class="ident">TextSize::try_from</span>(<span class="ident">input</span>.<span class="ident">find</span>(<span class="string">&quot;const&quot;</span>).<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>();
 
-        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse_script</span>(<span class="ident">input</span>, <span class="number">0</span>);
+        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse_script</span>(<span class="ident">input</span>, <span class="ident">FileId::zero</span>());
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">format_range</span>(
             <span class="ident">JsFormatOptions::new</span>(<span class="ident">SourceType::js_script</span>()).<span class="ident">with_indent_style</span>(<span class="ident">IndentStyle::Space</span>(<span class="number">4</span>)),
             <span class="kw-2">&amp;</span><span class="ident">tree</span>.<span class="ident">syntax</span>(),
@@ -1458,7 +1619,7 @@ function() {
         <span class="kw">let</span> <span class="ident">range_start</span> <span class="op">=</span> <span class="ident">TextSize::try_from</span>(<span class="ident">input</span>.<span class="ident">find</span>(<span class="string">&quot;const&quot;</span>).<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">range_end</span> <span class="op">=</span> <span class="ident">TextSize::try_from</span>(<span class="ident">input</span>.<span class="ident">find</span>(<span class="string">&#39;}&#39;</span>).<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>();
 
-        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse_script</span>(<span class="ident">input</span>, <span class="number">0</span>);
+        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse_script</span>(<span class="ident">input</span>, <span class="ident">FileId::zero</span>());
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">format_range</span>(
             <span class="ident">JsFormatOptions::new</span>(<span class="ident">SourceType::js_script</span>()).<span class="ident">with_indent_style</span>(<span class="ident">IndentStyle::Space</span>(<span class="number">4</span>)),
             <span class="kw-2">&amp;</span><span class="ident">tree</span>.<span class="ident">syntax</span>(),
@@ -1489,7 +1650,7 @@ function() {
         <span class="kw">let</span> <span class="ident">range_start</span> <span class="op">=</span> <span class="ident">TextSize::try_from</span>(<span class="ident">input</span>.<span class="ident">find</span>(<span class="string">&quot;statement_2&quot;</span>).<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">range_end</span> <span class="op">=</span> <span class="ident">range_start</span> <span class="op">+</span> <span class="ident">TextSize::of</span>(<span class="string">&quot;statement_2()&quot;</span>);
 
-        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse_script</span>(<span class="ident">input</span>, <span class="number">0</span>);
+        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse_script</span>(<span class="ident">input</span>, <span class="ident">FileId::zero</span>());
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">format_range</span>(
             <span class="ident">JsFormatOptions::new</span>(<span class="ident">SourceType::js_script</span>()).<span class="ident">with_indent_style</span>(<span class="ident">IndentStyle::Space</span>(<span class="number">4</span>)),
             <span class="kw-2">&amp;</span><span class="ident">tree</span>.<span class="ident">syntax</span>(),
@@ -1508,7 +1669,7 @@ function() {
         <span class="kw">let</span> <span class="ident">range_start</span> <span class="op">=</span> <span class="ident">TextSize::try_from</span>(<span class="ident">input</span>.<span class="ident">find</span>(<span class="string">&quot;3 + 4&quot;</span>).<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>();
         <span class="kw">let</span> <span class="ident">range_end</span> <span class="op">=</span> <span class="ident">range_start</span> <span class="op">+</span> <span class="ident">TextSize::of</span>(<span class="string">&quot;3 + 4&quot;</span>);
 
-        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse_script</span>(<span class="ident">input</span>, <span class="number">0</span>);
+        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse_script</span>(<span class="ident">input</span>, <span class="ident">FileId::zero</span>());
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">format_range</span>(
             <span class="ident">JsFormatOptions::new</span>(<span class="ident">SourceType::js_script</span>()).<span class="ident">with_indent_style</span>(<span class="ident">IndentStyle::Space</span>(<span class="number">4</span>)),
             <span class="kw-2">&amp;</span><span class="ident">tree</span>.<span class="ident">syntax</span>(),
@@ -1530,7 +1691,7 @@ function() {
         <span class="kw">let</span> <span class="ident">range_start</span> <span class="op">=</span> <span class="ident">TextSize::from</span>(<span class="number">5</span>);
         <span class="kw">let</span> <span class="ident">range_end</span> <span class="op">=</span> <span class="ident">TextSize::from</span>(<span class="number">5</span>);
 
-        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse_script</span>(<span class="ident">input</span>, <span class="number">0</span>);
+        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse_script</span>(<span class="ident">input</span>, <span class="ident">FileId::zero</span>());
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">format_range</span>(
             <span class="ident">JsFormatOptions::new</span>(<span class="ident">SourceType::js_script</span>()).<span class="ident">with_indent_style</span>(<span class="ident">IndentStyle::Space</span>(<span class="number">4</span>)),
             <span class="kw-2">&amp;</span><span class="ident">tree</span>.<span class="ident">syntax</span>(),
@@ -1542,16 +1703,79 @@ function() {
         <span class="macro">assert_eq!</span>(<span class="ident">result</span>.<span class="ident">range</span>(), <span class="prelude-val">Some</span>(<span class="ident">TextRange::new</span>(<span class="ident">range_start</span>, <span class="ident">range_end</span>)));
     }
 
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_range_formatting_middle_of_token</span>() {
+        <span class="kw">let</span> <span class="ident">input</span> <span class="op">=</span> <span class="string">r#&quot;/* */ function Foo(){
+/**/
+}
+&quot;#</span>;
+
+        <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">TextRange::new</span>(<span class="ident">TextSize::from</span>(<span class="number">16</span>), <span class="ident">TextSize::from</span>(<span class="number">28</span>));
+
+        <span class="macro">debug_assert_eq!</span>(
+            <span class="kw-2">&amp;</span><span class="ident">input</span>[<span class="ident">range</span>],
+            <span class="string">r#&quot;oo(){
+/**/
+}&quot;#</span>
+        );
+
+        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse_script</span>(<span class="ident">input</span>, <span class="ident">FileId::zero</span>());
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">format_range</span>(
+            <span class="ident">JsFormatOptions::new</span>(<span class="ident">SourceType::js_script</span>()).<span class="ident">with_indent_style</span>(<span class="ident">IndentStyle::Space</span>(<span class="number">4</span>)),
+            <span class="kw-2">&amp;</span><span class="ident">tree</span>.<span class="ident">syntax</span>(),
+            <span class="ident">range</span>,
+        )
+        .<span class="ident">expect</span>(<span class="string">&quot;Range formatting failed&quot;</span>);
+
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">result</span>.<span class="ident">as_code</span>(),
+            <span class="string">r#&quot;/* */ function Foo() {
+    /**/
+}&quot;#</span>
+        );
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">result</span>.<span class="ident">range</span>(),
+            <span class="prelude-val">Some</span>(<span class="ident">TextRange::new</span>(<span class="ident">TextSize::from</span>(<span class="number">0</span>), <span class="ident">TextSize::from</span>(<span class="number">28</span>)))
+        )
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">range_formatting_trailing_comments</span>() {
+        <span class="kw">let</span> <span class="ident">input</span> <span class="op">=</span> <span class="string">r#&quot;let fn =a((x ) =&gt; {
+          quux (); //
+        });
+&quot;#</span>;
+
+        <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">TextRange::new</span>(<span class="ident">TextSize::from</span>(<span class="number">28</span>), <span class="ident">TextSize::from</span>(<span class="number">41</span>));
+
+        <span class="macro">debug_assert_eq!</span>(<span class="kw-2">&amp;</span><span class="ident">input</span>[<span class="ident">range</span>], <span class="string">r#&quot;  quux (); //&quot;#</span>);
+
+        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse_script</span>(<span class="ident">input</span>, <span class="ident">FileId::zero</span>());
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">format_range</span>(
+            <span class="ident">JsFormatOptions::new</span>(<span class="ident">SourceType::js_script</span>()).<span class="ident">with_indent_style</span>(<span class="ident">IndentStyle::Space</span>(<span class="number">4</span>)),
+            <span class="kw-2">&amp;</span><span class="ident">tree</span>.<span class="ident">syntax</span>(),
+            <span class="ident">range</span>,
+        )
+        .<span class="ident">expect</span>(<span class="string">&quot;Range formatting failed&quot;</span>);
+
+        <span class="macro">assert_eq!</span>(<span class="ident">result</span>.<span class="ident">as_code</span>(), <span class="string">r#&quot;quux(); //&quot;#</span>);
+        <span class="macro">assert_eq!</span>(
+            <span class="ident">result</span>.<span class="ident">range</span>(),
+            <span class="prelude-val">Some</span>(<span class="ident">TextRange::new</span>(<span class="ident">TextSize::from</span>(<span class="number">30</span>), <span class="ident">TextSize::from</span>(<span class="number">41</span>)))
+        )
+    }
+
     <span class="attribute">#[<span class="ident">ignore</span>]</span>
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="comment">// use this test check if your snippet prints as you wish, without using a snapshot</span>
     <span class="kw">fn</span> <span class="ident">quick_test</span>() {
-        <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="string">r#&quot;
-        type C = B &amp; (C | A) &amp; B;
+        <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="string">r#&quot;long_obj =
+  &lt;div style={{ i: &#39;dont&#39;, use: &#39;bootstrap&#39;, and: &#39;instead&#39;, use: &#39;massive&#39;, objects }}&gt;hello world&lt;/div&gt;
+
 
 &quot;#</span>;
-        <span class="kw">let</span> <span class="ident">syntax</span> <span class="op">=</span> <span class="ident">SourceType::tsx</span>();
-        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">src</span>, <span class="number">0</span>, <span class="ident">syntax</span>);
+        <span class="kw">let</span> <span class="ident">syntax</span> <span class="op">=</span> <span class="ident">SourceType::jsx</span>();
+        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">src</span>, <span class="ident">FileId::zero</span>(), <span class="ident">syntax</span>);
         <span class="kw">let</span> <span class="ident">options</span> <span class="op">=</span> <span class="ident">JsFormatOptions::new</span>(<span class="ident">syntax</span>);
 
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">format_node</span>(<span class="ident">options</span>.<span class="ident">clone</span>(), <span class="kw-2">&amp;</span><span class="ident">tree</span>.<span class="ident">syntax</span>())
@@ -1575,7 +1799,7 @@ function() {
         <span class="kw">let</span> <span class="ident">src</span> <span class="op">=</span> <span class="string">&quot;statement();&quot;</span>;
 
         <span class="kw">let</span> <span class="ident">syntax</span> <span class="op">=</span> <span class="ident">SourceType::js_module</span>();
-        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">src</span>, <span class="number">0</span>, <span class="ident">syntax</span>);
+        <span class="kw">let</span> <span class="ident">tree</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">src</span>, <span class="ident">FileId::zero</span>(), <span class="ident">syntax</span>);
 
         <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">format_range</span>(
             <span class="ident">JsFormatOptions::new</span>(<span class="ident">syntax</span>),

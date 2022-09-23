@@ -47,12 +47,8 @@
 <span id="41">41</span>
 <span id="42">42</span>
 <span id="43">43</span>
-<span id="44">44</span>
-<span id="45">45</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{
-    <span class="ident">JsAnyObjectBindingPatternMember</span>, <span class="ident">JsObjectBindingPatternPropertyList</span>, <span class="ident">JsSyntaxKind</span>,
-};
+<span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{<span class="ident">JsAnyObjectBindingPatternMember</span>, <span class="ident">JsObjectBindingPatternPropertyList</span>};
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormatJsObjectBindingPatternPropertyList</span>;
@@ -81,7 +77,7 @@
         };
 
         <span class="kw">let</span> <span class="ident">entries</span> <span class="op">=</span> <span class="ident">node</span>
-            .<span class="ident">format_separated</span>(<span class="ident">JsSyntaxKind::COMMA</span>)
+            .<span class="ident">format_separated</span>(<span class="string">&quot;,&quot;</span>)
             .<span class="ident">with_trailing_separator</span>(<span class="ident">trailing_separator</span>)
             .<span class="ident">zip</span>(<span class="ident">node</span>.<span class="ident">iter</span>());
 

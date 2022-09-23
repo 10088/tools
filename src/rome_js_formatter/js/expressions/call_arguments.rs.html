@@ -765,17 +765,13 @@
 <span id="759">759</span>
 <span id="760">760</span>
 <span id="761">761</span>
-<span id="762">762</span>
-<span id="763">763</span>
-<span id="764">764</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::builders</span>::{<span class="ident">format_close_delimiter</span>, <span class="ident">format_open_delimiter</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils</span>::{<span class="ident">is_call_like_expression</span>, <span class="ident">write_arguments_multi_line</span>};
-<span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">format_args</span>, <span class="ident">write</span>};
+<span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">format_args</span>, <span class="ident">write</span>, <span class="ident">CstFormatContext</span>};
 <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{
     <span class="ident">JsAnyCallArgument</span>, <span class="ident">JsAnyExpression</span>, <span class="ident">JsAnyFunctionBody</span>, <span class="ident">JsAnyLiteralExpression</span>, <span class="ident">JsAnyName</span>,
     <span class="ident">JsAnyStatement</span>, <span class="ident">JsArrayExpression</span>, <span class="ident">JsArrowFunctionExpression</span>, <span class="ident">JsCallArgumentList</span>,
-    <span class="ident">JsCallArguments</span>, <span class="ident">JsCallArgumentsFields</span>, <span class="ident">JsCallExpression</span>, <span class="ident">JsSyntaxKind</span>, <span class="ident">TsReferenceType</span>,
+    <span class="ident">JsCallArguments</span>, <span class="ident">JsCallArgumentsFields</span>, <span class="ident">JsCallExpression</span>, <span class="ident">TsReferenceType</span>,
 };
 <span class="kw">use</span> <span class="ident">rome_rowan</span>::{<span class="ident">AstSeparatedList</span>, <span class="ident">SyntaxResult</span>, <span class="ident">SyntaxTokenText</span>};
 
@@ -798,7 +794,7 @@
                 <span class="ident">f</span>,
                 [
                     <span class="ident">l_paren_token</span>.<span class="ident">format</span>(),
-                    <span class="ident">args</span>.<span class="ident">format</span>(),
+                    <span class="ident">format_dangling_comments</span>(<span class="ident">node</span>.<span class="ident">syntax</span>()).<span class="ident">with_soft_block_indent</span>(),
                     <span class="ident">r_paren_token</span>.<span class="ident">format</span>()
                 ]
             );
@@ -828,14 +824,16 @@
                     <span class="bool-val">false</span>
                 };
 
-            <span class="kw">let</span> <span class="ident">is_react_hook_with_deps_array</span> <span class="op">=</span>
-                <span class="ident">is_react_hook_with_deps_array</span>(<span class="kw-2">&amp;</span><span class="ident">first_argument</span>, <span class="kw-2">&amp;</span><span class="ident">second_argument</span>)<span class="question-mark">?</span>
-                    <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">node</span>.<span class="ident">syntax</span>().<span class="ident">first_or_last_token_have_comments</span>();
+            <span class="kw">let</span> <span class="ident">is_react_hook_with_deps_array</span> <span class="op">=</span> <span class="ident">is_react_hook_with_deps_array</span>(
+                <span class="kw-2">&amp;</span><span class="ident">first_argument</span>,
+                <span class="kw-2">&amp;</span><span class="ident">second_argument</span>,
+                <span class="ident">f</span>.<span class="ident">context</span>().<span class="ident">comments</span>(),
+            )<span class="question-mark">?</span>;
 
             <span class="kw">if</span> <span class="ident">is_framework_test_call</span> <span class="op">|</span><span class="op">|</span> <span class="ident">is_react_hook_with_deps_array</span> {
                 <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">l_paren_token</span>.<span class="ident">format</span>(),])<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">separated</span> <span class="op">=</span> <span class="ident">args</span>
-                    .<span class="ident">format_separated</span>(<span class="ident">JsSyntaxKind::COMMA</span>)
+                    .<span class="ident">format_separated</span>(<span class="string">&quot;,&quot;</span>)
                     .<span class="ident">with_trailing_separator</span>(<span class="ident">TrailingSeparator::Omit</span>);
 
                 <span class="ident">f</span>.<span class="ident">join_with</span>(<span class="ident">space</span>()).<span class="ident">entries</span>(<span class="ident">separated</span>).<span class="ident">finish</span>()<span class="question-mark">?</span>;
@@ -843,23 +841,16 @@
             }
         };
 
-        <span class="comment">// we create open a close delimiters</span>
-        <span class="kw">let</span> <span class="ident">open_delimiter</span> <span class="op">=</span> <span class="ident">format_open_delimiter</span>(<span class="kw-2">&amp;</span><span class="ident">l_paren_token</span>);
-        <span class="kw">let</span> <span class="ident">close_delimiter</span> <span class="op">=</span> <span class="ident">format_close_delimiter</span>(<span class="kw-2">&amp;</span><span class="ident">r_paren_token</span>);
-
         <span class="comment">// we now extracts the formatted version of trivias and tokens of the delimiters</span>
         <span class="comment">// tokens on the left</span>
-        <span class="kw">let</span> <span class="ident">l_leading_trivia</span> <span class="op">=</span> <span class="ident">open_delimiter</span>.<span class="ident">format_leading_trivia</span>();
-        <span class="kw">let</span> <span class="ident">l_paren</span> <span class="op">=</span> <span class="ident">open_delimiter</span>.<span class="ident">format_token</span>();
-        <span class="kw">let</span> <span class="ident">l_trailing_trivia</span> <span class="op">=</span> <span class="ident">open_delimiter</span>.<span class="ident">format_trailing_trivia</span>();
+        <span class="kw">let</span> <span class="ident">l_paren</span> <span class="op">=</span> <span class="ident">l_paren_token</span>.<span class="ident">format</span>();
 
         <span class="comment">// tokens on the right</span>
-        <span class="kw">let</span> <span class="ident">r_leading_trivia</span> <span class="op">=</span> <span class="ident">close_delimiter</span>.<span class="ident">format_leading_trivia</span>();
-        <span class="kw">let</span> <span class="ident">r_paren</span> <span class="op">=</span> <span class="ident">close_delimiter</span>.<span class="ident">format_token</span>();
-        <span class="kw">let</span> <span class="ident">r_trailing_trivia</span> <span class="op">=</span> <span class="ident">close_delimiter</span>.<span class="ident">format_trailing_trivia</span>();
+        <span class="kw">let</span> <span class="ident">r_paren</span> <span class="op">=</span> <span class="ident">r_paren_token</span>.<span class="ident">format</span>();
 
-        <span class="kw">let</span> <span class="ident">should_group_first_argument</span> <span class="op">=</span> <span class="ident">should_group_first_argument</span>(<span class="kw-2">&amp;</span><span class="ident">args</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">should_group_last_argument</span> <span class="op">=</span> <span class="ident">should_group_last_argument</span>(<span class="kw-2">&amp;</span><span class="ident">args</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">comments</span> <span class="op">=</span> <span class="ident">f</span>.<span class="ident">context</span>().<span class="ident">comments</span>();
+        <span class="kw">let</span> <span class="ident">should_group_first_argument</span> <span class="op">=</span> <span class="ident">should_group_first_argument</span>(<span class="kw-2">&amp;</span><span class="ident">args</span>, <span class="ident">comments</span>)<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">should_group_last_argument</span> <span class="op">=</span> <span class="ident">should_group_last_argument</span>(<span class="kw-2">&amp;</span><span class="ident">args</span>, <span class="ident">comments</span>)<span class="question-mark">?</span>;
 
         <span class="comment">// if the first or last groups needs grouping, then we prepare some special formatting</span>
         <span class="kw">if</span> <span class="ident">should_group_first_argument</span> <span class="op">|</span><span class="op">|</span> <span class="ident">should_group_last_argument</span> {
@@ -868,7 +859,7 @@
             <span class="comment">// we can&#39;t attempt to print the same node twice without incur in &quot;printed token twice&quot; errors.</span>
             <span class="comment">// We also disallow the trailing separator, we are interested in doing it manually.</span>
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">separated</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">args</span>
-                .<span class="ident">format_separated</span>(<span class="ident">JsSyntaxKind::COMMA</span>)
+                .<span class="ident">format_separated</span>(<span class="string">&quot;,&quot;</span>)
                 .<span class="ident">with_trailing_separator</span>(<span class="ident">TrailingSeparator::Omit</span>)
                 .<span class="ident">map</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="ident">e</span>.<span class="ident">memoized</span>())
                 .<span class="ident">collect</span>();
@@ -890,14 +881,10 @@
             <span class="comment">// We now cache them the delimiters tokens. This is needed because `[rome_formatter::best_fitting]` will try to</span>
             <span class="comment">// print each version first</span>
             <span class="comment">// tokens on the left</span>
-            <span class="kw">let</span> <span class="ident">l_leading_trivia</span> <span class="op">=</span> <span class="ident">l_leading_trivia</span>.<span class="ident">memoized</span>();
             <span class="kw">let</span> <span class="ident">l_paren</span> <span class="op">=</span> <span class="ident">l_paren</span>.<span class="ident">memoized</span>();
-            <span class="kw">let</span> <span class="ident">l_trailing_trivia</span> <span class="op">=</span> <span class="ident">l_trailing_trivia</span>.<span class="ident">memoized</span>();
 
             <span class="comment">// tokens on the right</span>
-            <span class="kw">let</span> <span class="ident">r_leading_trivia</span> <span class="op">=</span> <span class="ident">r_leading_trivia</span>.<span class="ident">memoized</span>();
             <span class="kw">let</span> <span class="ident">r_paren</span> <span class="op">=</span> <span class="ident">r_paren</span>.<span class="ident">memoized</span>();
-            <span class="kw">let</span> <span class="ident">r_trailing_trivia</span> <span class="op">=</span> <span class="ident">r_trailing_trivia</span>.<span class="ident">memoized</span>();
 
             <span class="comment">// This is the version of where all the arguments are broken out</span>
             <span class="kw">let</span> <span class="ident">all_arguments_expanded</span> <span class="op">=</span> <span class="ident">format_with</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> {
@@ -906,25 +893,21 @@
                 <span class="macro">write!</span>(
                     <span class="ident">f</span>,
                     [
-                        <span class="kw-2">&amp;</span><span class="ident">l_leading_trivia</span>,
                         <span class="kw-2">&amp;</span><span class="ident">l_paren</span>,
                         <span class="kw-2">&amp;</span><span class="ident">group</span>(<span class="kw-2">&amp;</span><span class="ident">format_with</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> {
                             <span class="macro">write!</span>(
                                 <span class="ident">f</span>,
                                 [
                                     <span class="kw-2">&amp;</span><span class="ident">soft_block_indent</span>(<span class="kw-2">&amp;</span><span class="macro">format_args!</span>[
-                                        <span class="kw-2">&amp;</span><span class="ident">l_trailing_trivia</span>,
                                         <span class="ident">format_with</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> {
                                             <span class="ident">write_arguments_multi_line</span>(<span class="ident">separated</span>.<span class="ident">iter</span>(), <span class="ident">f</span>)
                                         }),
-                                        <span class="kw-2">&amp;</span><span class="ident">r_leading_trivia</span>,
                                         <span class="ident">soft_line_break</span>()
                                     ]),
                                     <span class="kw-2">&amp;</span><span class="ident">r_paren</span>
                                 ]
                             )
                         })),
-                        <span class="kw-2">&amp;</span><span class="ident">r_trailing_trivia</span>
                     ]
                 )
             });
@@ -938,7 +921,7 @@
                 <span class="comment">// which means that if one is `false`, then the other is `true`.</span>
                 <span class="comment">// This means that in this branch we format the case where `should_group_first_argument`,</span>
                 <span class="comment">// in the else branch we format the case where `should_group_last_argument` is `true`.</span>
-                <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">l_leading_trivia</span>, <span class="ident">l_paren</span>, <span class="ident">l_trailing_trivia</span>,])<span class="question-mark">?</span>;
+                <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">l_paren</span>])<span class="question-mark">?</span>;
                 <span class="kw">if</span> <span class="ident">should_group_first_argument</span> {
                     <span class="comment">// special formatting of the first element</span>
                     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">separated</span>.<span class="ident">iter</span>();
@@ -963,22 +946,18 @@
                         }))
                         .<span class="ident">finish</span>()<span class="question-mark">?</span>;
                 }
-                <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">r_leading_trivia</span>, <span class="ident">r_paren</span>, <span class="ident">r_trailing_trivia</span>])
+                <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">r_paren</span>])
             });
 
             <span class="macro">write!</span>(
                 <span class="ident">f</span>,
                 [<span class="macro">best_fitting!</span>[
                     <span class="macro">format_args!</span>[
-                        <span class="ident">l_leading_trivia</span>,
                         <span class="ident">l_paren</span>,
-                        <span class="ident">l_trailing_trivia</span>,
                         <span class="ident">group</span>(<span class="kw-2">&amp;</span><span class="ident">format_with</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> {
                             <span class="ident">write_arguments_multi_line</span>(<span class="ident">separated</span>.<span class="ident">iter</span>(), <span class="ident">f</span>)
                         })),
-                        <span class="ident">r_leading_trivia</span>,
                         <span class="ident">r_paren</span>,
-                        <span class="ident">r_trailing_trivia</span>
                     ],
                     <span class="ident">edge_arguments_do_not_break</span>,
                     <span class="ident">all_arguments_expanded</span>
@@ -987,30 +966,32 @@
         } <span class="kw">else</span> {
             <span class="macro">write!</span>(
                 <span class="ident">f</span>,
-                [
-                    <span class="ident">l_leading_trivia</span>,
-                    <span class="ident">group</span>(<span class="kw-2">&amp;</span><span class="macro">format_args!</span>[
-                        <span class="ident">l_paren</span>,
-                        <span class="ident">l_trailing_trivia</span>,
-                        <span class="ident">soft_block_indent</span>(<span class="kw-2">&amp;</span><span class="ident">format_with</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> {
-                            <span class="kw">let</span> <span class="ident">separated</span> <span class="op">=</span> <span class="ident">args</span>
-                                .<span class="ident">format_separated</span>(<span class="ident">JsSyntaxKind::COMMA</span>)
-                                .<span class="ident">with_trailing_separator</span>(<span class="ident">TrailingSeparator::Omit</span>)
-                                .<span class="ident">nodes_grouped</span>();
-                            <span class="ident">write_arguments_multi_line</span>(<span class="ident">separated</span>, <span class="ident">f</span>)
-                        })),
-                        <span class="ident">r_leading_trivia</span>,
-                        <span class="ident">r_paren</span>,
-                    ]),
-                    <span class="ident">r_trailing_trivia</span>
-                ]
+                [<span class="ident">group</span>(<span class="kw-2">&amp;</span><span class="macro">format_args!</span>[
+                    <span class="ident">l_paren</span>,
+                    <span class="ident">soft_block_indent</span>(<span class="kw-2">&amp;</span><span class="ident">format_with</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> {
+                        <span class="kw">let</span> <span class="ident">separated</span> <span class="op">=</span> <span class="ident">args</span>
+                            .<span class="ident">format_separated</span>(<span class="string">&quot;,&quot;</span>)
+                            .<span class="ident">with_trailing_separator</span>(<span class="ident">TrailingSeparator::Omit</span>)
+                            .<span class="ident">nodes_grouped</span>();
+                        <span class="ident">write_arguments_multi_line</span>(<span class="ident">separated</span>, <span class="ident">f</span>)
+                    })),
+                    <span class="ident">r_paren</span>,
+                ]),]
             )
         }
+    }
+
+    <span class="kw">fn</span> <span class="ident">fmt_dangling_comments</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="ident">JsCallArguments</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut</span> <span class="ident">JsFormatter</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="comment">// Formatted inside of `fmt_fields`</span>
+        <span class="prelude-val">Ok</span>(())
     }
 }
 
 <span class="doccomment">/// Checks if the the first argument requires grouping</span>
-<span class="kw">fn</span> <span class="ident">should_group_first_argument</span>(<span class="ident">list</span>: <span class="kw-2">&amp;</span><span class="ident">JsCallArgumentList</span>) -&gt; <span class="ident">SyntaxResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">should_group_first_argument</span>(
+    <span class="ident">list</span>: <span class="kw-2">&amp;</span><span class="ident">JsCallArgumentList</span>,
+    <span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">JsComments</span>,
+) -&gt; <span class="ident">SyntaxResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="ident">list</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="number">2</span> {
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>);
     }
@@ -1018,8 +999,6 @@
     <span class="comment">// SAFETY: checked at the beginning of the function</span>
     <span class="kw">let</span> <span class="ident">first</span> <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>()<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">second</span> <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>()<span class="question-mark">?</span>;
-
-    <span class="kw">let</span> <span class="ident">has_comments</span> <span class="op">=</span> <span class="ident">first</span>.<span class="ident">syntax</span>().<span class="ident">has_comments_direct</span>();
 
     <span class="kw">let</span> <span class="ident">is_function_like</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">first</span>.<span class="ident">as_js_any_expression</span>() {
         <span class="prelude-val">Some</span>(<span class="ident">JsAnyExpression::JsFunctionExpression</span>(<span class="kw">_</span>)) =&gt; <span class="bool-val">true</span>,
@@ -1039,17 +1018,23 @@
             );
             (
                 <span class="ident">second_arg_is_function_like</span>,
-                <span class="ident">could_group_expression_argument</span>(<span class="ident">second_expression</span>, <span class="bool-val">false</span>)<span class="question-mark">?</span>,
+                <span class="ident">could_group_expression_argument</span>(<span class="ident">second_expression</span>, <span class="bool-val">false</span>, <span class="ident">comments</span>)<span class="question-mark">?</span>,
             )
         }
         <span class="prelude-val">None</span> =&gt; (<span class="bool-val">false</span>, <span class="bool-val">false</span>),
     };
 
-    <span class="prelude-val">Ok</span>(<span class="op">!</span><span class="ident">has_comments</span> <span class="op">&amp;&amp;</span> <span class="ident">is_function_like</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">second_arg_is_function_like</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">can_group</span>)
+    <span class="prelude-val">Ok</span>(<span class="op">!</span><span class="ident">comments</span>.<span class="ident">has_comments</span>(<span class="ident">first</span>.<span class="ident">syntax</span>())
+        <span class="op">&amp;&amp;</span> <span class="ident">is_function_like</span>
+        <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">second_arg_is_function_like</span>
+        <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">can_group</span>)
 }
 
 <span class="doccomment">/// Checks if the last group requires grouping</span>
-<span class="kw">fn</span> <span class="ident">should_group_last_argument</span>(<span class="ident">list</span>: <span class="kw-2">&amp;</span><span class="ident">JsCallArgumentList</span>) -&gt; <span class="ident">SyntaxResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">should_group_last_argument</span>(
+    <span class="ident">list</span>: <span class="kw-2">&amp;</span><span class="ident">JsCallArgumentList</span>,
+    <span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">JsComments</span>,
+) -&gt; <span class="ident">SyntaxResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">list_len</span> <span class="op">=</span> <span class="ident">list</span>.<span class="ident">len</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">list</span>.<span class="ident">iter</span>();
     <span class="kw">let</span> <span class="ident">last</span> <span class="op">=</span> <span class="ident">iter</span>.<span class="ident">next_back</span>();
@@ -1075,12 +1060,15 @@
 
         <span class="kw">let</span> <span class="ident">can_group</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">last</span> {
             <span class="ident">JsAnyCallArgument::JsAnyExpression</span>(<span class="ident">expression</span>) =&gt; {
-                <span class="ident">could_group_expression_argument</span>(<span class="ident">expression</span>, <span class="bool-val">false</span>)<span class="question-mark">?</span>
+                <span class="ident">could_group_expression_argument</span>(<span class="ident">expression</span>, <span class="bool-val">false</span>, <span class="ident">comments</span>)<span class="question-mark">?</span>
             }
             <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
         };
 
-        <span class="prelude-val">Ok</span>(<span class="op">!</span><span class="ident">last</span>.<span class="ident">syntax</span>().<span class="ident">has_comments_direct</span>() <span class="op">&amp;&amp;</span> <span class="ident">can_group</span> <span class="op">&amp;&amp;</span> <span class="ident">check_with_penultimate</span>)
+        <span class="prelude-val">Ok</span>(<span class="op">!</span><span class="ident">comments</span>.<span class="ident">has_leading_comments</span>(<span class="ident">last</span>.<span class="ident">syntax</span>())
+            <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">comments</span>.<span class="ident">has_trailing_comments</span>(<span class="ident">last</span>.<span class="ident">syntax</span>())
+            <span class="op">&amp;&amp;</span> <span class="ident">can_group</span>
+            <span class="op">&amp;&amp;</span> <span class="ident">check_with_penultimate</span>)
     } <span class="kw">else</span> {
         <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
     }
@@ -1090,27 +1078,24 @@
 <span class="kw">fn</span> <span class="ident">could_group_expression_argument</span>(
     <span class="ident">argument</span>: <span class="kw-2">&amp;</span><span class="ident">JsAnyExpression</span>,
     <span class="ident">is_arrow_recursion</span>: <span class="ident">bool</span>,
+    <span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">JsComments</span>,
 ) -&gt; <span class="ident">SyntaxResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">argument</span> {
         <span class="ident">JsAnyExpression::JsObjectExpression</span>(<span class="ident">object_expression</span>) =&gt; {
             <span class="ident">object_expression</span>.<span class="ident">members</span>().<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>
-                <span class="op">|</span><span class="op">|</span> <span class="ident">object_expression</span>
-                    .<span class="ident">syntax</span>()
-                    .<span class="ident">first_or_last_token_have_comments</span>()
+                <span class="op">|</span><span class="op">|</span> <span class="ident">comments</span>.<span class="ident">has_comments</span>(<span class="ident">object_expression</span>.<span class="ident">syntax</span>())
         }
 
         <span class="ident">JsAnyExpression::JsArrayExpression</span>(<span class="ident">array_expression</span>) =&gt; {
             <span class="ident">array_expression</span>.<span class="ident">elements</span>().<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">0</span>
-                <span class="op">|</span><span class="op">|</span> <span class="ident">array_expression</span>
-                    .<span class="ident">syntax</span>()
-                    .<span class="ident">first_or_last_token_have_comments</span>()
+                <span class="op">|</span><span class="op">|</span> <span class="ident">comments</span>.<span class="ident">has_comments</span>(<span class="ident">array_expression</span>.<span class="ident">syntax</span>())
         }
         <span class="ident">JsAnyExpression::TsTypeAssertionExpression</span>(<span class="ident">assertion_expression</span>) =&gt; {
-            <span class="ident">could_group_expression_argument</span>(<span class="kw-2">&amp;</span><span class="ident">assertion_expression</span>.<span class="ident">expression</span>()<span class="question-mark">?</span>, <span class="bool-val">false</span>)<span class="question-mark">?</span>
+            <span class="ident">could_group_expression_argument</span>(<span class="kw-2">&amp;</span><span class="ident">assertion_expression</span>.<span class="ident">expression</span>()<span class="question-mark">?</span>, <span class="bool-val">false</span>, <span class="ident">comments</span>)<span class="question-mark">?</span>
         }
 
         <span class="ident">JsAnyExpression::TsAsExpression</span>(<span class="ident">as_expression</span>) =&gt; {
-            <span class="ident">could_group_expression_argument</span>(<span class="kw-2">&amp;</span><span class="ident">as_expression</span>.<span class="ident">expression</span>()<span class="question-mark">?</span>, <span class="bool-val">false</span>)<span class="question-mark">?</span>
+            <span class="ident">could_group_expression_argument</span>(<span class="kw-2">&amp;</span><span class="ident">as_expression</span>.<span class="ident">expression</span>()<span class="question-mark">?</span>, <span class="bool-val">false</span>, <span class="ident">comments</span>)<span class="question-mark">?</span>
         }
         <span class="ident">JsAnyExpression::JsArrowFunctionExpression</span>(<span class="ident">arrow_function</span>) =&gt; {
             <span class="kw">let</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">arrow_function</span>.<span class="ident">body</span>()<span class="question-mark">?</span>;
@@ -1165,7 +1150,9 @@
                             .<span class="ident">body</span>()
                             .<span class="ident">ok</span>()
                             .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">body</span><span class="op">|</span> <span class="ident">body</span>.<span class="ident">as_js_any_expression</span>().<span class="ident">cloned</span>())
-                            .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">body</span><span class="op">|</span> <span class="ident">could_group_expression_argument</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>, <span class="bool-val">true</span>).<span class="ident">ok</span>())
+                            .<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">body</span><span class="op">|</span> {
+                                <span class="ident">could_group_expression_argument</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>, <span class="bool-val">true</span>, <span class="ident">comments</span>).<span class="ident">ok</span>()
+                            })
                             .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
                     } <span class="kw">else</span> {
                         <span class="bool-val">false</span>
@@ -1200,7 +1187,14 @@
 <span class="kw">fn</span> <span class="ident">is_react_hook_with_deps_array</span>(
     <span class="ident">first_argument</span>: <span class="kw-2">&amp;</span><span class="ident">JsAnyCallArgument</span>,
     <span class="ident">second_argument</span>: <span class="kw-2">&amp;</span><span class="ident">JsAnyCallArgument</span>,
+    <span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">JsComments</span>,
 ) -&gt; <span class="ident">SyntaxResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+    <span class="kw">if</span> <span class="ident">comments</span>.<span class="ident">has_comments</span>(<span class="ident">first_argument</span>.<span class="ident">syntax</span>())
+        <span class="op">|</span><span class="op">|</span> <span class="ident">comments</span>.<span class="ident">has_comments</span>(<span class="ident">second_argument</span>.<span class="ident">syntax</span>())
+    {
+        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>);
+    }
+
     <span class="kw">let</span> <span class="ident">first_expression</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">first_argument</span> {
         <span class="ident">JsAnyCallArgument::JsAnyExpression</span>(<span class="ident">expression</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">expression</span>),
         <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
@@ -1220,7 +1214,6 @@
     };
 
     <span class="kw">let</span> <span class="ident">second_node_matches</span> <span class="op">=</span> <span class="macro">matches!</span>(<span class="ident">second_argument</span>, <span class="ident">JsAnyCallArgument::JsAnyExpression</span>(<span class="kw">_</span>));
-    <span class="comment">// let no_comments = !node.syntax().first_or_last_token_have_comments();</span>
     <span class="kw">if</span> <span class="ident">first_node_matches</span> <span class="op">&amp;&amp;</span> <span class="ident">second_node_matches</span> {
         <span class="prelude-val">Ok</span>(<span class="bool-val">true</span>)
     } <span class="kw">else</span> {
@@ -1463,13 +1456,14 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::contains_a_test_pattern</span>;
+    <span class="kw">use</span> <span class="ident">rome_diagnostics::file::FileId</span>;
     <span class="kw">use</span> <span class="ident">rome_js_parser::parse</span>;
     <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{<span class="ident">JsCallExpression</span>, <span class="ident">SourceType</span>};
     <span class="kw">use</span> <span class="ident">rome_rowan::AstNodeList</span>;
 
     <span class="kw">fn</span> <span class="ident">extract_call_expression</span>(<span class="ident">src</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">JsCallExpression</span> {
         <span class="kw">let</span> <span class="ident">source_type</span> <span class="op">=</span> <span class="ident">SourceType::js_module</span>();
-        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">src</span>, <span class="number">0</span>, <span class="ident">source_type</span>);
+        <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">parse</span>(<span class="ident">src</span>, <span class="ident">FileId::zero</span>(), <span class="ident">source_type</span>);
         <span class="kw">let</span> <span class="ident">module</span> <span class="op">=</span> <span class="ident">result</span>
             .<span class="ident">tree</span>()
             .<span class="ident">as_js_module</span>()

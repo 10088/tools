@@ -1011,7 +1011,7 @@
     <span class="doccomment">/// Mutable reference to the [console](Console)</span>
     <span class="ident">console</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;ctx</span> <span class="kw-2">mut</span> <span class="kw">dyn</span> <span class="ident">Console</span>,
     <span class="doccomment">/// Receiver channel that expects info when a file is processed</span>
-    <span class="ident">recv_files</span>: <span class="ident">Receiver</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">PathBuf</span>)<span class="op">&gt;</span>,
+    <span class="ident">recv_files</span>: <span class="ident">Receiver</span><span class="op">&lt;</span>(<span class="ident">FileId</span>, <span class="ident">PathBuf</span>)<span class="op">&gt;</span>,
     <span class="doccomment">/// Receiver channel that expects info when a message is sent</span>
     <span class="ident">recv_msgs</span>: <span class="ident">Receiver</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Sender of reports</span>

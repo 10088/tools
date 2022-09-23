@@ -53,12 +53,6 @@
 <span id="47">47</span>
 <span id="48">48</span>
 <span id="49">49</span>
-<span id="50">50</span>
-<span id="51">51</span>
-<span id="52">52</span>
-<span id="53">53</span>
-<span id="54">54</span>
-<span id="55">55</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::parentheses::NeedsParentheses</span>;
@@ -93,13 +87,7 @@
                 <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">arguments</span>.<span class="ident">format</span>()])
             }
             <span class="prelude-val">None</span> =&gt; {
-                <span class="macro">write!</span>(
-                    <span class="ident">f</span>,
-                    [
-                        <span class="ident">format_inserted</span>(<span class="ident">JsSyntaxKind::L_PAREN</span>),
-                        <span class="ident">format_inserted</span>(<span class="ident">JsSyntaxKind::R_PAREN</span>)
-                    ]
-                )
+                <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">text</span>(<span class="string">&quot;(&quot;</span>), <span class="ident">text</span>(<span class="string">&quot;)&quot;</span>)])
             }
         }
     }

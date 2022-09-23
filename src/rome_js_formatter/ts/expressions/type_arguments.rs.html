@@ -96,12 +96,10 @@
 <span id="90">90</span>
 <span id="91">91</span>
 <span id="92">92</span>
-<span id="93">93</span>
-<span id="94">94</span>
-<span id="95">95</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils::should_hug_type</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">prelude</span>::<span class="kw-2">*</span>, <span class="ident">utils::is_object_like_type</span>};
 <span class="kw">use</span> <span class="ident">rome_formatter::write</span>;
+<span class="kw">use</span> <span class="ident">rome_formatter::FormatError::SyntaxError</span>;
 <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{
     <span class="ident">JsAnyExpression</span>, <span class="ident">JsSyntaxKind</span>, <span class="ident">JsVariableDeclarator</span>, <span class="ident">TsType</span>, <span class="ident">TsTypeArguments</span>,
     <span class="ident">TsTypeArgumentsFields</span>,
@@ -117,6 +115,10 @@
             <span class="ident">ts_type_argument_list</span>,
             <span class="ident">r_angle_token</span>,
         } <span class="op">=</span> <span class="ident">node</span>.<span class="ident">as_fields</span>();
+
+        <span class="kw">if</span> <span class="ident">ts_type_argument_list</span>.<span class="ident">is_empty</span>() {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SyntaxError</span>);
+        }
 
         <span class="comment">// We want to check if we are inside something like this:</span>
         <span class="comment">// const foo: SomeThing&lt;{ [P in &quot;x&quot; | &quot;y&quot;]: number }&gt; = func();</span>
@@ -172,26 +174,18 @@
         <span class="kw">let</span> <span class="ident">should_inline</span> <span class="op">=</span> <span class="op">!</span><span class="ident">is_arrow_function_variables</span>
             <span class="op">&amp;&amp;</span> (<span class="ident">ts_type_argument_list</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">first_argument_can_be_hugged_or_is_null_type</span>);
 
+        <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">l_angle_token</span>.<span class="ident">format</span>(),])<span class="question-mark">?</span>;
+
         <span class="kw">if</span> <span class="ident">should_inline</span> {
-            <span class="macro">write!</span>(
-                <span class="ident">f</span>,
-                [
-                    <span class="ident">l_angle_token</span>.<span class="ident">format</span>(),
-                    <span class="ident">ts_type_argument_list</span>.<span class="ident">format</span>(),
-                    <span class="ident">r_angle_token</span>.<span class="ident">format</span>(),
-                ]
-            )
+            <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">ts_type_argument_list</span>.<span class="ident">format</span>()])<span class="question-mark">?</span>;
         } <span class="kw">else</span> {
             <span class="macro">write!</span>(
                 <span class="ident">f</span>,
-                [<span class="ident">format_delimited</span>(
-                    <span class="kw-2">&amp;</span><span class="ident">l_angle_token</span><span class="question-mark">?</span>,
-                    <span class="kw-2">&amp;</span><span class="ident">ts_type_argument_list</span>.<span class="ident">format</span>(),
-                    <span class="kw-2">&amp;</span><span class="ident">r_angle_token</span><span class="question-mark">?</span>,
-                )
-                .<span class="ident">soft_block_indent</span>()]
-            )
+                [<span class="ident">group</span>(<span class="kw-2">&amp;</span><span class="ident">soft_block_indent</span>(<span class="kw-2">&amp;</span><span class="ident">ts_type_argument_list</span>.<span class="ident">format</span>()))]
+            )<span class="question-mark">?</span>;
         }
+
+        <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">r_angle_token</span>.<span class="ident">format</span>()])
     }
 }
 </code></pre></div>

@@ -208,12 +208,46 @@
 <span id="202">202</span>
 <span id="203">203</span>
 <span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">fmt</span>::{<span class="self">self</span>, <span class="ident">Write</span> <span class="kw">as</span> <span class="kw">_</span>},
     <span class="ident">io</span>,
 };
 
-<span class="kw">use</span> <span class="ident">termcolor</span>::{<span class="ident">ColorSpec</span>, <span class="ident">WriteColor</span>};
+<span class="kw">use</span> <span class="ident">termcolor</span>::{<span class="ident">Color</span>, <span class="ident">ColorSpec</span>, <span class="ident">WriteColor</span>};
 <span class="kw">use</span> <span class="ident">unicode_width::UnicodeWidthChar</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">fmt::MarkupElements</span>, <span class="ident">MarkupElement</span>};
@@ -285,18 +319,32 @@
 {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">color</span> <span class="op">=</span> <span class="ident">ColorSpec::new</span>();
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">link</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inverse</span> <span class="op">=</span> <span class="bool-val">false</span>;
 
     <span class="ident">state</span>.<span class="ident">for_each</span>(<span class="kw-2">&amp;mut</span> <span class="op">|</span><span class="ident">elements</span><span class="op">|</span> {
         <span class="kw">for</span> <span class="ident">element</span> <span class="kw">in</span> <span class="ident">elements</span> {
-            <span class="kw">if</span> <span class="kw">let</span> <span class="ident">MarkupElement::Hyperlink</span> { <span class="ident">href</span> } <span class="op">=</span> <span class="ident">element</span> {
-                <span class="ident">link</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">href</span>);
-            } <span class="kw">else</span> {
-                <span class="ident">element</span>.<span class="ident">update_color</span>(<span class="kw-2">&amp;mut</span> <span class="ident">color</span>);
+            <span class="kw">match</span> <span class="ident">element</span> {
+                <span class="ident">MarkupElement::Inverse</span> =&gt; {
+                    <span class="ident">inverse</span> <span class="op">=</span> <span class="op">!</span><span class="ident">inverse</span>;
+                }
+                <span class="ident">MarkupElement::Hyperlink</span> { <span class="ident">href</span> } =&gt; {
+                    <span class="ident">link</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">href</span>);
+                }
+                <span class="kw">_</span> =&gt; {
+                    <span class="ident">element</span>.<span class="ident">update_color</span>(<span class="kw-2">&amp;mut</span> <span class="ident">color</span>);
+                }
             }
         }
 
         <span class="prelude-val">Ok</span>(())
     })<span class="question-mark">?</span>;
+
+    <span class="kw">if</span> <span class="ident">inverse</span> {
+        <span class="kw">let</span> <span class="ident">fg</span> <span class="op">=</span> <span class="ident">color</span>.<span class="ident">fg</span>().<span class="ident">map_or</span>(<span class="ident">Color::White</span>, <span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">c</span>);
+        <span class="kw">let</span> <span class="ident">bg</span> <span class="op">=</span> <span class="ident">color</span>.<span class="ident">bg</span>().<span class="ident">map_or</span>(<span class="ident">Color::Black</span>, <span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="kw-2">*</span><span class="ident">c</span>);
+        <span class="ident">color</span>.<span class="ident">set_bg</span>(<span class="prelude-val">Some</span>(<span class="ident">fg</span>));
+        <span class="ident">color</span>.<span class="ident">set_fg</span>(<span class="prelude-val">Some</span>(<span class="ident">bg</span>));
+    }
 
     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=</span> <span class="ident">writer</span>.<span class="ident">set_color</span>(<span class="kw-2">&amp;</span><span class="ident">color</span>) {
         <span class="ident">writer</span>.<span class="ident">reset</span>()<span class="question-mark">?</span>;
@@ -308,7 +356,7 @@
         <span class="comment">// `is_synchronous` is used to check if the underlying writer</span>
         <span class="comment">// is using the Windows Console API, that does not support ANSI</span>
         <span class="comment">// escape codes. Generally this would only be true when running</span>
-        <span class="comment">// in the legacy `cmd.exe` terminal emulator, since int modern</span>
+        <span class="comment">// in the legacy `cmd.exe` terminal emulator, since in modern</span>
         <span class="comment">// clients like the Windows Terminal ANSI is used instead</span>
         <span class="kw">if</span> <span class="ident">writer</span>.<span class="ident">supports_color</span>() <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">writer</span>.<span class="ident">is_synchronous</span>() {
             <span class="macro">write!</span>(<span class="ident">writer</span>, <span class="string">&quot;\x1b]8;;{href}\x1b\\&quot;</span>)<span class="question-mark">?</span>;
@@ -334,7 +382,10 @@
     <span class="ident">error</span>: <span class="ident">io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">io::Write</span><span class="op">&gt;</span> <span class="ident">fmt::Write</span> <span class="kw">for</span> <span class="ident">SanitizeAdapter</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">fmt::Write</span> <span class="kw">for</span> <span class="ident">SanitizeAdapter</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">W</span>: <span class="ident">WriteColor</span>,
+{
     <span class="kw">fn</span> <span class="ident">write_str</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">content</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">fmt::Result</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> [<span class="number">0</span>; <span class="number">4</span>];
 
@@ -344,6 +395,10 @@
             <span class="kw">let</span> <span class="ident">is_zero_width</span> <span class="op">=</span> <span class="ident">UnicodeWidthChar::width</span>(<span class="ident">item</span>).<span class="ident">map_or</span>(<span class="bool-val">true</span>, <span class="op">|</span><span class="ident">width</span><span class="op">|</span> <span class="ident">width</span> <span class="op">==</span> <span class="number">0</span>);
             <span class="kw">let</span> <span class="ident">item</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">is_whitespace</span> <span class="op">&amp;&amp;</span> <span class="ident">is_zero_width</span> {
                 <span class="ident">char::REPLACEMENT_CHARACTER</span>
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="macro">cfg!</span>(<span class="ident">windows</span>) <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">supports_color</span>() {
+                <span class="comment">// Unicode is currently poorly supported on most Windows</span>
+                <span class="comment">// terminal clients, so we always strip emojis in Windows</span>
+                <span class="ident">unicode_to_ascii</span>(<span class="ident">item</span>)
             } <span class="kw">else</span> {
                 <span class="ident">item</span>
             };
@@ -356,6 +411,18 @@
         }
 
         <span class="prelude-val">Ok</span>(())
+    }
+}
+
+<span class="doccomment">/// Replace emoji characters with similar but more widely supported ASCII</span>
+<span class="doccomment">/// characters</span>
+<span class="kw">fn</span> <span class="ident">unicode_to_ascii</span>(<span class="ident">c</span>: <span class="ident">char</span>) -&gt; <span class="ident">char</span> {
+    <span class="kw">match</span> <span class="ident">c</span> {
+        <span class="string">&#39;\u{2714}&#39;</span> =&gt; <span class="string">&#39;\u{221a}&#39;</span>,
+        <span class="string">&#39;\u{2139}&#39;</span> =&gt; <span class="string">&#39;i&#39;</span>,
+        <span class="string">&#39;\u{26a0}&#39;</span> =&gt; <span class="string">&#39;!&#39;</span>,
+        <span class="string">&#39;\u{2716}&#39;</span> =&gt; <span class="string">&#39;\u{00d7}&#39;</span>,
+        <span class="kw">_</span> =&gt; <span class="ident">c</span>,
     }
 }
 
@@ -383,8 +450,9 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
 
         {
+            <span class="kw">let</span> <span class="ident">writer</span> <span class="op">=</span> <span class="ident">termcolor::Ansi::new</span>(<span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>);
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">adapter</span> <span class="op">=</span> <span class="ident">SanitizeAdapter</span> {
-                <span class="ident">writer</span>: <span class="kw-2">&amp;mut</span> <span class="ident">buffer</span>,
+                <span class="ident">writer</span>,
                 <span class="ident">error</span>: <span class="prelude-val">Ok</span>(()),
             };
 

@@ -259,8 +259,35 @@
 <span id="253">253</span>
 <span id="254">254</span>
 <span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rome_formatter::write</span>;
+<span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">write</span>, <span class="ident">CstFormatContext</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::js::expressions::call_arguments::is_test_call_expression</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::js::lists::parameter_list</span>::{
@@ -279,6 +306,11 @@
 <span class="kw">impl</span> <span class="ident">FormatNodeRule</span><span class="op">&lt;</span><span class="ident">JsParameters</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">FormatJsParameters</span> {
     <span class="kw">fn</span> <span class="ident">fmt_fields</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="kw-2">&amp;</span><span class="ident">JsParameters</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">JsFormatter</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="ident">FormatJsAnyParameters::from</span>(<span class="ident">node</span>.<span class="ident">clone</span>()).<span class="ident">fmt</span>(<span class="ident">f</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">fmt_dangling_comments</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="ident">JsParameters</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut</span> <span class="ident">JsFormatter</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="comment">// Formatted inside of `FormatJsAnyParameters</span>
+        <span class="prelude-val">Ok</span>(())
     }
 }
 
@@ -300,9 +332,12 @@
             <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
         });
 
-        <span class="kw">let</span> <span class="ident">can_hug</span> <span class="op">=</span> <span class="ident">should_hug_function_parameters</span>(<span class="self">self</span>)<span class="question-mark">?</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">has_any_decorated_parameter</span>;
+        <span class="kw">let</span> <span class="ident">can_hug</span> <span class="op">=</span> <span class="ident">should_hug_function_parameters</span>(<span class="self">self</span>, <span class="ident">f</span>.<span class="ident">context</span>().<span class="ident">comments</span>())<span class="question-mark">?</span>
+            <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">has_any_decorated_parameter</span>;
 
-        <span class="kw">let</span> <span class="ident">layout</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">can_hug</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">is_in_test_call</span>()<span class="question-mark">?</span> {
+        <span class="kw">let</span> <span class="ident">layout</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">list</span>.<span class="ident">is_empty</span>() {
+            <span class="ident">ParameterLayout::NoParameters</span>
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">can_hug</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">is_in_test_call</span>()<span class="question-mark">?</span> {
             <span class="ident">ParameterLayout::Hug</span>
         } <span class="kw">else</span> {
             <span class="ident">ParameterLayout::Default</span>
@@ -312,6 +347,16 @@
         <span class="kw">let</span> <span class="ident">r_paren_token</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">r_paren_token</span>()<span class="question-mark">?</span>;
 
         <span class="kw">match</span> <span class="ident">layout</span> {
+            <span class="ident">ParameterLayout::NoParameters</span> =&gt; {
+                <span class="macro">write!</span>(
+                    <span class="ident">f</span>,
+                    [
+                        <span class="ident">l_paren_token</span>.<span class="ident">format</span>(),
+                        <span class="ident">format_dangling_comments</span>(<span class="self">self</span>.<span class="ident">syntax</span>()).<span class="ident">with_soft_block_indent</span>(),
+                        <span class="ident">r_paren_token</span>.<span class="ident">format</span>()
+                    ]
+                )
+            }
             <span class="ident">ParameterLayout::Hug</span> =&gt; {
                 <span class="macro">write!</span>(
                     <span class="ident">f</span>,
@@ -322,14 +367,19 @@
                     ]
                 )
             }
-            <span class="ident">ParameterLayout::Default</span> =&gt; <span class="ident">format_delimited</span>(
-                <span class="kw-2">&amp;</span><span class="ident">l_paren_token</span>,
-                <span class="kw-2">&amp;</span><span class="ident">FormatJsAnyParameterList::with_layout</span>(<span class="kw-2">&amp;</span><span class="ident">list</span>, <span class="ident">ParameterLayout::Default</span>),
-                <span class="kw-2">&amp;</span><span class="ident">r_paren_token</span>,
-            )
-            .<span class="ident">soft_block_indent</span>()
-            .<span class="ident">ungrouped</span>()
-            .<span class="ident">fmt</span>(<span class="ident">f</span>),
+            <span class="ident">ParameterLayout::Default</span> =&gt; {
+                <span class="macro">write!</span>(
+                    <span class="ident">f</span>,
+                    [
+                        <span class="ident">l_paren_token</span>.<span class="ident">format</span>(),
+                        <span class="ident">soft_block_indent</span>(<span class="kw-2">&amp;</span><span class="ident">FormatJsAnyParameterList::with_layout</span>(
+                            <span class="kw-2">&amp;</span><span class="ident">list</span>,
+                            <span class="ident">ParameterLayout::Default</span>
+                        )),
+                        <span class="ident">r_paren_token</span>.<span class="ident">format</span>()
+                    ]
+                )
+            }
         }
     }
 }
@@ -399,6 +449,11 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ParameterLayout</span> {
+    <span class="doccomment">/// ```javascript</span>
+    <span class="doccomment">/// function test() {}</span>
+    <span class="doccomment">/// ```</span>
+    <span class="ident">NoParameters</span>,
+
     <span class="doccomment">/// Enforce that the opening and closing parentheses aren&#39;t separated from the first token of the parameter.</span>
     <span class="doccomment">/// For example, to enforce that the `{`  and `}` of an object expression are formatted on the same line</span>
     <span class="doccomment">/// as the `(` and `)` tokens even IF the object expression itself breaks across multiple lines.</span>
@@ -424,7 +479,10 @@
     <span class="ident">Default</span>,
 }
 
-<span class="kw">fn</span> <span class="ident">should_hug_function_parameters</span>(<span class="ident">parameters</span>: <span class="kw-2">&amp;</span><span class="ident">FormatJsAnyParameters</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">should_hug_function_parameters</span>(
+    <span class="ident">parameters</span>: <span class="kw-2">&amp;</span><span class="ident">FormatJsAnyParameters</span>,
+    <span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">JsComments</span>,
+) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
     <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{
         <span class="ident">JsAnyBinding</span>::<span class="kw-2">*</span>, <span class="ident">JsAnyBindingPattern</span>::<span class="kw-2">*</span>, <span class="ident">JsAnyExpression</span>::<span class="kw-2">*</span>, <span class="ident">JsAnyFormalParameter</span>::<span class="kw-2">*</span>,
         <span class="ident">JsAnyParameter</span>::<span class="kw-2">*</span>,
@@ -436,14 +494,10 @@
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>);
     }
 
-    <span class="kw">if</span> <span class="ident">parameters</span>.<span class="ident">r_paren_token</span>()<span class="question-mark">?</span>.<span class="ident">has_leading_comments</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>);
-    }
-
     <span class="comment">// SAFETY: Safe because of the length check above</span>
     <span class="kw">let</span> <span class="ident">only_parameter</span> <span class="op">=</span> <span class="ident">list</span>.<span class="ident">first</span>().<span class="ident">unwrap</span>()<span class="question-mark">?</span>;
 
-    <span class="kw">if</span> <span class="ident">only_parameter</span>.<span class="ident">syntax</span>().<span class="ident">has_comments_direct</span>() {
+    <span class="kw">if</span> <span class="ident">comments</span>.<span class="ident">has_comments</span>(<span class="ident">only_parameter</span>.<span class="ident">syntax</span>()) {
         <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>);
     }
 

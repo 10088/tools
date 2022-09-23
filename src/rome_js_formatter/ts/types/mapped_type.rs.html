@@ -71,10 +71,47 @@
 <span id="65">65</span>
 <span id="66">66</span>
 <span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
+<span id="81">81</span>
+<span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
+<span id="89">89</span>
+<span id="90">90</span>
+<span id="91">91</span>
+<span id="92">92</span>
+<span id="93">93</span>
+<span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils::FormatWithSemicolon</span>;
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::parentheses::NeedsParentheses</span>;
+<span class="kw">use</span> <span class="ident">rome_formatter::trivia::FormatLeadingComments</span>;
 <span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">format_args</span>, <span class="ident">write</span>};
 <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{<span class="ident">JsSyntaxNode</span>, <span class="ident">TsMappedType</span>, <span class="ident">TsMappedTypeFields</span>};
 
@@ -98,38 +135,75 @@
             <span class="ident">r_curly_token</span>,
         } <span class="op">=</span> <span class="ident">node</span>.<span class="ident">as_fields</span>();
 
+        <span class="kw">let</span> <span class="ident">property_name</span> <span class="op">=</span> <span class="ident">property_name</span><span class="question-mark">?</span>;
+
+        <span class="kw">let</span> <span class="ident">should_expand</span> <span class="op">=</span> <span class="ident">node</span>
+            .<span class="ident">syntax</span>()
+            .<span class="ident">tokens</span>()
+            .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">token</span><span class="op">|</span> {
+                <span class="ident">token</span>
+                    .<span class="ident">leading_trivia</span>()
+                    .<span class="ident">pieces</span>()
+                    .<span class="ident">chain</span>(<span class="ident">token</span>.<span class="ident">trailing_trivia</span>().<span class="ident">pieces</span>())
+            })
+            .<span class="ident">any</span>(<span class="op">|</span><span class="ident">piece</span><span class="op">|</span> <span class="ident">piece</span>.<span class="ident">is_newline</span>());
+
+        <span class="kw">let</span> <span class="ident">format_semi</span> <span class="op">=</span> <span class="ident">format_with</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">semi</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">semicolon_token</span> {
+                <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">semi</span>.<span class="ident">format</span>()])
+            } <span class="kw">else</span> {
+                <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">text</span>(<span class="string">&quot;;&quot;</span>)])
+            }
+        });
+
+        <span class="kw">let</span> <span class="ident">comments</span> <span class="op">=</span> <span class="ident">f</span>.<span class="ident">comments</span>().<span class="ident">clone</span>();
+        <span class="kw">let</span> <span class="ident">dangling_comments</span> <span class="op">=</span> <span class="ident">comments</span>.<span class="ident">dangling_comments</span>(<span class="ident">node</span>.<span class="ident">syntax</span>());
+        <span class="kw">let</span> <span class="ident">type_annotation_has_leading_comment</span> <span class="op">=</span>
+            <span class="ident">mapped_type</span>.<span class="ident">as_ref</span>().<span class="ident">map_or</span>(<span class="bool-val">false</span>, <span class="op">|</span><span class="ident">annotation</span><span class="op">|</span> {
+                <span class="ident">comments</span>.<span class="ident">has_leading_comments</span>(<span class="ident">annotation</span>.<span class="ident">syntax</span>())
+            });
+
         <span class="macro">write!</span>(
             <span class="ident">f</span>,
-            [<span class="ident">format_delimited</span>(
-                <span class="kw-2">&amp;</span><span class="ident">l_curly_token</span><span class="question-mark">?</span>,
-                <span class="kw-2">&amp;</span><span class="ident">FormatWithSemicolon::new</span>(
-                    <span class="kw-2">&amp;</span><span class="macro">format_args!</span>(
-                        <span class="ident">readonly_modifier</span>
-                            .<span class="ident">format</span>()
-                            .<span class="ident">with_or_empty</span>(<span class="op">|</span><span class="ident">readonly</span>, <span class="ident">f</span><span class="op">|</span> <span class="macro">write!</span>[<span class="ident">f</span>, [<span class="ident">readonly</span>, <span class="ident">space</span>()]]),
+            [
+                <span class="kw-2">&amp;</span><span class="ident">l_curly_token</span>.<span class="ident">format</span>(),
+                <span class="ident">group</span>(<span class="kw-2">&amp;</span><span class="ident">indent</span>(<span class="kw-2">&amp;</span><span class="macro">format_args!</span>(
+                    <span class="ident">soft_line_break_or_space</span>(),
+                    <span class="ident">readonly_modifier</span>
+                        .<span class="ident">format</span>()
+                        .<span class="ident">with_or_empty</span>(<span class="op">|</span><span class="ident">readonly</span>, <span class="ident">f</span><span class="op">|</span> <span class="macro">write!</span>[<span class="ident">f</span>, [<span class="ident">readonly</span>, <span class="ident">space</span>()]]),
+                    <span class="ident">FormatLeadingComments::Comments</span>(<span class="ident">dangling_comments</span>),
+                    <span class="ident">group</span>(<span class="kw-2">&amp;</span><span class="macro">format_args!</span>[
                         <span class="ident">l_brack_token</span>.<span class="ident">format</span>(),
                         <span class="ident">property_name</span>.<span class="ident">format</span>(),
                         <span class="ident">space</span>(),
                         <span class="ident">in_token</span>.<span class="ident">format</span>(),
-                        <span class="ident">space</span>(),
-                        <span class="ident">keys_type</span>.<span class="ident">format</span>(),
-                        <span class="ident">as_clause</span>
-                            .<span class="ident">format</span>()
-                            .<span class="ident">with_or_empty</span>(<span class="op">|</span><span class="ident">clause</span>, <span class="ident">f</span><span class="op">|</span> <span class="macro">write!</span>[<span class="ident">f</span>, [<span class="ident">space</span>(), <span class="ident">clause</span>]]),
+                        <span class="ident">soft_line_indent_or_space</span>(<span class="kw-2">&amp;</span><span class="macro">format_args!</span>[
+                            <span class="ident">keys_type</span>.<span class="ident">format</span>(),
+                            <span class="ident">as_clause</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">space</span>()),
+                            <span class="ident">as_clause</span>.<span class="ident">format</span>(),
+                        ]),
                         <span class="ident">r_brack_token</span>.<span class="ident">format</span>(),
-                        <span class="ident">optional_modifier</span>.<span class="ident">format</span>(),
-                        <span class="ident">mapped_type</span>.<span class="ident">format</span>(),
-                    ),
-                    <span class="ident">semicolon_token</span>.<span class="ident">as_ref</span>(),
-                ),
-                <span class="kw-2">&amp;</span><span class="ident">r_curly_token</span><span class="question-mark">?</span>,
-            )
-            .<span class="ident">block_indent</span>()]
+                    ]),
+                    <span class="ident">optional_modifier</span>.<span class="ident">format</span>(),
+                    <span class="ident">type_annotation_has_leading_comment</span>.<span class="ident">then_some</span>(<span class="ident">space</span>()),
+                    <span class="ident">mapped_type</span>.<span class="ident">format</span>(),
+                    <span class="ident">if_group_breaks</span>(<span class="kw-2">&amp;</span><span class="ident">format_semi</span>)
+                )))
+                .<span class="ident">should_expand</span>(<span class="ident">should_expand</span>),
+                <span class="ident">soft_line_break_or_space</span>(),
+                <span class="ident">r_curly_token</span>.<span class="ident">format</span>(),
+            ]
         )
     }
 
     <span class="kw">fn</span> <span class="ident">needs_parentheses</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="ident">TsMappedType</span>) -&gt; <span class="ident">bool</span> {
         <span class="ident">item</span>.<span class="ident">needs_parentheses</span>()
+    }
+
+    <span class="kw">fn</span> <span class="ident">fmt_dangling_comments</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="ident">TsMappedType</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut</span> <span class="ident">JsFormatter</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="comment">// Handled inside of `fmt_fields`</span>
+        <span class="prelude-val">Ok</span>(())
     }
 }
 

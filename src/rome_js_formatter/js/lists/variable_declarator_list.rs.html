@@ -107,7 +107,7 @@
         });
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">declarators</span> <span class="op">=</span> <span class="ident">node</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(
-            <span class="ident">node</span>.<span class="ident">format_separated</span>(<span class="ident">JsSyntaxKind::COMMA</span>)
+            <span class="ident">node</span>.<span class="ident">format_separated</span>(<span class="string">&quot;,&quot;</span>)
                 .<span class="ident">with_trailing_separator</span>(<span class="ident">TrailingSeparator::Disallowed</span>),
         );
 
@@ -116,7 +116,7 @@
             <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">FormatError::SyntaxError</span>),
         };
 
-        <span class="kw">if</span> <span class="ident">length</span> <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">first_declarator</span>.<span class="ident">syntax</span>().<span class="ident">has_leading_comments</span>() {
+        <span class="kw">if</span> <span class="ident">length</span> <span class="op">==</span> <span class="number">1</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">f</span>.<span class="ident">comments</span>().<span class="ident">has_leading_comments</span>(<span class="ident">first_declarator</span>.<span class="ident">syntax</span>()) {
             <span class="kw">return</span> <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">format_first_declarator</span>]);
         }
 

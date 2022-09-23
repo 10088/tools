@@ -233,6 +233,8 @@
 <span id="227">227</span>
 <span id="228">228</span>
 <span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">borrow::Cow</span>,
     <span class="ident">fmt</span>::{<span class="self">self</span>, <span class="ident">Debug</span>},
@@ -259,6 +261,7 @@
     <span class="ident">Success</span>,
     <span class="ident">Warn</span>,
     <span class="ident">Info</span>,
+    <span class="ident">Inverse</span>,
     <span class="ident">Hyperlink</span> { <span class="ident">href</span>: <span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;fmt</span>, <span class="ident">str</span><span class="op">&gt;</span> },
 }
 
@@ -301,7 +304,7 @@
                 <span class="ident">color</span>.<span class="ident">set_fg</span>(<span class="prelude-val">Some</span>(<span class="ident">BLUE</span>));
             }
 
-            <span class="ident">MarkupElement::Hyperlink</span> { .. } =&gt; {}
+            <span class="ident">MarkupElement::Inverse</span> <span class="op">|</span> <span class="ident">MarkupElement::Hyperlink</span> { .. } =&gt; {}
         }
     }
 
@@ -315,6 +318,7 @@
             <span class="ident">MarkupElement::Success</span> =&gt; <span class="ident">MarkupElement::Success</span>,
             <span class="ident">MarkupElement::Warn</span> =&gt; <span class="ident">MarkupElement::Warn</span>,
             <span class="ident">MarkupElement::Info</span> =&gt; <span class="ident">MarkupElement::Info</span>,
+            <span class="ident">MarkupElement::Inverse</span> =&gt; <span class="ident">MarkupElement::Inverse</span>,
             <span class="ident">MarkupElement::Hyperlink</span> { <span class="ident">href</span> } =&gt; <span class="ident">MarkupElement::Hyperlink</span> {
                 <span class="ident">href</span>: <span class="ident">Cow::Owned</span>(<span class="kw">match</span> <span class="ident">href</span> {
                     <span class="ident">Cow::Borrowed</span>(<span class="ident">href</span>) =&gt; <span class="ident">href</span>.<span class="ident">to_string</span>(),
@@ -457,7 +461,7 @@
 <span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">MarkupBuf</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
         <span class="kw">for</span> <span class="ident">node</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="number">0</span> {
-            <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{node:?}&quot;</span>)<span class="question-mark">?</span>;
+            <span class="ident">Debug::fmt</span>(<span class="ident">node</span>, <span class="ident">fmt</span>)<span class="question-mark">?</span>;
         }
         <span class="prelude-val">Ok</span>(())
     }

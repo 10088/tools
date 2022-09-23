@@ -197,12 +197,19 @@
 <span id="191">191</span>
 <span id="192">192</span>
 <span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
+<span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::js::bindings::parameters::ParameterLayout</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{
     <span class="ident">JsAnyConstructorParameter</span>, <span class="ident">JsAnyParameter</span>, <span class="ident">JsConstructorParameterList</span>, <span class="ident">JsLanguage</span>,
-    <span class="ident">JsParameterList</span>, <span class="ident">JsSyntaxKind</span>,
+    <span class="ident">JsParameterList</span>,
 };
 <span class="kw">use</span> <span class="ident">rome_rowan</span>::{<span class="ident">declare_node_union</span>, <span class="ident">AstSeparatedListNodesIterator</span>, <span class="ident">SyntaxResult</span>};
 
@@ -239,7 +246,7 @@
 <span class="kw">impl</span> <span class="ident">Format</span><span class="op">&lt;</span><span class="ident">JsFormatContext</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">FormatJsAnyParameterList</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="ident">JsFormatContext</span><span class="op">&gt;</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">layout</span> {
-            <span class="prelude-val">None</span> <span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">ParameterLayout::Default</span>) =&gt; {
+            <span class="prelude-val">None</span> <span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">ParameterLayout::Default</span>) <span class="op">|</span> <span class="prelude-val">Some</span>(<span class="ident">ParameterLayout::NoParameters</span>) =&gt; {
                 <span class="comment">// The trailing separator is disallowed if the last element in the list is a rest parameter</span>
                 <span class="kw">let</span> <span class="ident">has_trailing_rest</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">list</span>.<span class="ident">last</span>() {
                     <span class="prelude-val">Some</span>(<span class="ident">elem</span>) =&gt; <span class="macro">matches!</span>(
@@ -263,7 +270,7 @@
                 <span class="kw">match</span> <span class="self">self</span>.<span class="ident">list</span> {
                     <span class="ident">JsAnyParameterList::JsParameterList</span>(<span class="ident">list</span>) =&gt; {
                         <span class="kw">let</span> <span class="ident">entries</span> <span class="op">=</span> <span class="ident">list</span>
-                            .<span class="ident">format_separated</span>(<span class="ident">JsSyntaxKind::COMMA</span>)
+                            .<span class="ident">format_separated</span>(<span class="string">&quot;,&quot;</span>)
                             .<span class="ident">with_trailing_separator</span>(<span class="ident">trailing_separator</span>)
                             .<span class="ident">zip</span>(<span class="ident">list</span>.<span class="ident">iter</span>());
 
@@ -273,7 +280,7 @@
                     }
                     <span class="ident">JsAnyParameterList::JsConstructorParameterList</span>(<span class="ident">list</span>) =&gt; {
                         <span class="kw">let</span> <span class="ident">entries</span> <span class="op">=</span> <span class="ident">list</span>
-                            .<span class="ident">format_separated</span>(<span class="ident">JsSyntaxKind::COMMA</span>)
+                            .<span class="ident">format_separated</span>(<span class="string">&quot;,&quot;</span>)
                             .<span class="ident">with_trailing_separator</span>(<span class="ident">trailing_separator</span>)
                             .<span class="ident">zip</span>(<span class="ident">list</span>.<span class="ident">iter</span>());
 
@@ -290,11 +297,11 @@
 
                 <span class="kw">match</span> <span class="self">self</span>.<span class="ident">list</span> {
                     <span class="ident">JsAnyParameterList::JsParameterList</span>(<span class="ident">list</span>) =&gt; <span class="ident">join</span>.<span class="ident">entries</span>(
-                        <span class="ident">list</span>.<span class="ident">format_separated</span>(<span class="ident">JsSyntaxKind::COMMA</span>)
+                        <span class="ident">list</span>.<span class="ident">format_separated</span>(<span class="string">&quot;,&quot;</span>)
                             .<span class="ident">with_trailing_separator</span>(<span class="ident">TrailingSeparator::Omit</span>),
                     ),
                     <span class="ident">JsAnyParameterList::JsConstructorParameterList</span>(<span class="ident">list</span>) =&gt; <span class="ident">join</span>.<span class="ident">entries</span>(
-                        <span class="ident">list</span>.<span class="ident">format_separated</span>(<span class="ident">JsSyntaxKind::COMMA</span>)
+                        <span class="ident">list</span>.<span class="ident">format_separated</span>(<span class="string">&quot;,&quot;</span>)
                             .<span class="ident">with_trailing_separator</span>(<span class="ident">TrailingSeparator::Omit</span>),
                     ),
                 };
@@ -328,6 +335,13 @@
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">JsAnyParameterList::JsParameterList</span>(<span class="ident">parameters</span>) =&gt; <span class="ident">parameters</span>.<span class="ident">len</span>(),
             <span class="ident">JsAnyParameterList::JsConstructorParameterList</span>(<span class="ident">parameters</span>) =&gt; <span class="ident">parameters</span>.<span class="ident">len</span>(),
+        }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="kw">match</span> <span class="self">self</span> {
+            <span class="ident">JsAnyParameterList::JsParameterList</span>(<span class="ident">parameters</span>) =&gt; <span class="ident">parameters</span>.<span class="ident">is_empty</span>(),
+            <span class="ident">JsAnyParameterList::JsConstructorParameterList</span>(<span class="ident">parameters</span>) =&gt; <span class="ident">parameters</span>.<span class="ident">is_empty</span>(),
         }
     }
 

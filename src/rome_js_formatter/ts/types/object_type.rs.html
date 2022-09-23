@@ -28,6 +28,11 @@
 <span id="22">22</span>
 <span id="23">23</span>
 <span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::parentheses::NeedsParentheses</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils::JsObjectLike</span>;
@@ -44,6 +49,11 @@
 
     <span class="kw">fn</span> <span class="ident">needs_parentheses</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="ident">TsObjectType</span>) -&gt; <span class="ident">bool</span> {
         <span class="ident">item</span>.<span class="ident">needs_parentheses</span>()
+    }
+
+    <span class="kw">fn</span> <span class="ident">fmt_dangling_comments</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="ident">TsObjectType</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut</span> <span class="ident">JsFormatter</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="comment">// Formatted inside of `JsObjectLike`</span>
+        <span class="prelude-val">Ok</span>(())
     }
 }
 

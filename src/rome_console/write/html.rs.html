@@ -114,6 +114,10 @@
 <span id="108">108</span>
 <span id="109">109</span>
 <span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">fmt</span>,
     <span class="ident">io</span>::{<span class="self">self</span>, <span class="ident">Write</span> <span class="kw">as</span> <span class="kw">_</span>},
@@ -148,7 +152,7 @@
     <span class="ident">elements</span>.<span class="ident">for_each</span>(<span class="kw-2">&amp;mut</span> <span class="op">|</span><span class="ident">styles</span><span class="op">|</span> {
         <span class="kw">for</span> <span class="ident">style</span> <span class="kw">in</span> <span class="ident">styles</span> {
             <span class="kw">match</span> <span class="ident">style</span> {
-                <span class="ident">MarkupElement::Emphasis</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;em&gt;&quot;</span>)<span class="question-mark">?</span>,
+                <span class="ident">MarkupElement::Emphasis</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;strong&gt;&quot;</span>)<span class="question-mark">?</span>,
                 <span class="ident">MarkupElement::Dim</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;span style=\&quot;opacity: 0.8;\&quot;&gt;&quot;</span>)<span class="question-mark">?</span>,
                 <span class="ident">MarkupElement::Italic</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;i&gt;&quot;</span>)<span class="question-mark">?</span>,
                 <span class="ident">MarkupElement::Underline</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;u&gt;&quot;</span>)<span class="question-mark">?</span>,
@@ -156,6 +160,9 @@
                 <span class="ident">MarkupElement::Success</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;span style=\&quot;color: MediumSeaGreen;\&quot;&gt;&quot;</span>)<span class="question-mark">?</span>,
                 <span class="ident">MarkupElement::Warn</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;span style=\&quot;color: Orange;\&quot;&gt;&quot;</span>)<span class="question-mark">?</span>,
                 <span class="ident">MarkupElement::Info</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;span style=\&quot;color: rgb(38, 148, 255);\&quot;&gt;&quot;</span>)<span class="question-mark">?</span>,
+                <span class="ident">MarkupElement::Inverse</span> =&gt; {
+                    <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;span style=\&quot;color: #000; background-color: #ddd;\&quot;&gt;&quot;</span>)<span class="question-mark">?</span>
+                }
                 <span class="ident">MarkupElement::Hyperlink</span> { <span class="ident">href</span> } =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;a href=\&quot;{href}\&quot;&gt;&quot;</span>)<span class="question-mark">?</span>,
             }
         }
@@ -168,14 +175,15 @@
     <span class="ident">elements</span>.<span class="ident">for_each_rev</span>(<span class="kw-2">&amp;mut</span> <span class="op">|</span><span class="ident">styles</span><span class="op">|</span> {
         <span class="kw">for</span> <span class="ident">style</span> <span class="kw">in</span> <span class="ident">styles</span>.<span class="ident">iter</span>().<span class="ident">rev</span>() {
             <span class="kw">match</span> <span class="ident">style</span> {
-                <span class="ident">MarkupElement::Emphasis</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;/em&gt;&quot;</span>)<span class="question-mark">?</span>,
+                <span class="ident">MarkupElement::Emphasis</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;/strong&gt;&quot;</span>)<span class="question-mark">?</span>,
                 <span class="ident">MarkupElement::Italic</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;/i&gt;&quot;</span>)<span class="question-mark">?</span>,
                 <span class="ident">MarkupElement::Underline</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;/u&gt;&quot;</span>)<span class="question-mark">?</span>,
                 <span class="ident">MarkupElement::Dim</span>
                 <span class="op">|</span> <span class="ident">MarkupElement::Error</span>
                 <span class="op">|</span> <span class="ident">MarkupElement::Success</span>
                 <span class="op">|</span> <span class="ident">MarkupElement::Warn</span>
-                <span class="op">|</span> <span class="ident">MarkupElement::Info</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;/span&gt;&quot;</span>)<span class="question-mark">?</span>,
+                <span class="op">|</span> <span class="ident">MarkupElement::Info</span>
+                <span class="op">|</span> <span class="ident">MarkupElement::Inverse</span> =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;/span&gt;&quot;</span>)<span class="question-mark">?</span>,
                 <span class="ident">MarkupElement::Hyperlink</span> { .. } =&gt; <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;&lt;/a&gt;&quot;</span>)<span class="question-mark">?</span>,
             }
         }

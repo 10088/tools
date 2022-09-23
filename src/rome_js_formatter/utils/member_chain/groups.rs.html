@@ -283,6 +283,13 @@
 <span id="277">277</span>
 <span id="278">278</span>
 <span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::context::TabWidth</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::parentheses::NeedsParentheses</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
@@ -378,43 +385,40 @@
 }
 
 <span class="kw">impl</span> <span class="ident">MemberChainGroups</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_empty</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">groups</span>.<span class="ident">is_empty</span>()
+    }
+
     <span class="doccomment">/// This function checks if the current grouping should be merged with the first group.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">should_merge</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">head_group</span>: <span class="kw-2">&amp;</span><span class="ident">MemberChainGroup</span>) -&gt; <span class="ident">SyntaxResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">should_merge</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">head_group</span>: <span class="kw-2">&amp;</span><span class="ident">MemberChainGroup</span>,
+        <span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">JsComments</span>,
+    ) -&gt; <span class="ident">SyntaxResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="op">!</span><span class="self">self</span>.<span class="ident">groups</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="number">1</span>
             <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">should_not_wrap</span>(<span class="ident">head_group</span>)<span class="question-mark">?</span>
             <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">groups</span>[<span class="number">0</span>]
                 .<span class="ident">members</span>
                 .<span class="ident">first</span>()
-                .<span class="ident">map_or</span>(<span class="bool-val">false</span>, <span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">has_trailing_comments</span>()))
+                .<span class="ident">map_or</span>(<span class="bool-val">false</span>, <span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">comments</span>.<span class="ident">has_comments</span>(<span class="ident">item</span>.<span class="ident">syntax</span>())))
     }
 
     <span class="doccomment">/// Checks if the groups contain comments.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_comments</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SyntaxResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">has_leading_comments</span> <span class="op">=</span> <span class="bool-val">false</span>;
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_comments</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">JsComments</span>) -&gt; <span class="ident">bool</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">members</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">groups</span>.<span class="ident">iter</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">members</span>.<span class="ident">iter</span>());
 
-        <span class="kw">let</span> <span class="ident">flat_groups</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">groups</span>.<span class="ident">iter</span>().<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">members</span>.<span class="ident">iter</span>());
-        <span class="kw">for</span> <span class="ident">item</span> <span class="kw">in</span> <span class="ident">flat_groups</span> {
-            <span class="kw">if</span> <span class="ident">item</span>.<span class="ident">has_leading_comments</span>()<span class="question-mark">?</span> {
-                <span class="ident">has_leading_comments</span> <span class="op">=</span> <span class="bool-val">true</span>;
-                <span class="kw">break</span>;
-            }
-        }
-
-        <span class="kw">let</span> <span class="ident">has_trailing_comments</span> <span class="op">=</span> <span class="self">self</span>
-            .<span class="ident">groups</span>
-            .<span class="ident">iter</span>()
-            .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">members</span>.<span class="ident">iter</span>())
-            .<span class="ident">any</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">has_trailing_comments</span>());
+        <span class="kw">let</span> <span class="ident">has_comments</span> <span class="op">=</span> <span class="ident">members</span>.<span class="ident">any</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> {
+            <span class="ident">comments</span>.<span class="ident">has_trailing_comments</span>(<span class="ident">item</span>.<span class="ident">syntax</span>())
+                <span class="op">|</span><span class="op">|</span> <span class="ident">comments</span>.<span class="ident">has_leading_comments</span>(<span class="ident">item</span>.<span class="ident">syntax</span>())
+        });
 
         <span class="kw">let</span> <span class="ident">cutoff_has_leading_comments</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">groups</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">cutoff</span> <span class="kw">as</span> <span class="ident">usize</span> {
             <span class="kw">let</span> <span class="ident">group</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">groups</span>.<span class="ident">get</span>(<span class="self">self</span>.<span class="ident">cutoff</span> <span class="kw">as</span> <span class="ident">usize</span>);
             <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">group</span>) <span class="op">=</span> <span class="ident">group</span> {
                 <span class="kw">let</span> <span class="ident">first_item</span> <span class="op">=</span> <span class="ident">group</span>.<span class="ident">members</span>.<span class="ident">first</span>();
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">first_item</span>) <span class="op">=</span> <span class="ident">first_item</span> {
-                    <span class="ident">first_item</span>.<span class="ident">has_leading_comments</span>()<span class="question-mark">?</span>
-                } <span class="kw">else</span> {
-                    <span class="bool-val">false</span>
-                }
+                <span class="ident">first_item</span>.<span class="ident">map_or</span>(<span class="bool-val">false</span>, <span class="op">|</span><span class="ident">first_item</span><span class="op">|</span> {
+                    <span class="ident">comments</span>.<span class="ident">has_leading_comments</span>(<span class="ident">first_item</span>.<span class="ident">syntax</span>())
+                })
             } <span class="kw">else</span> {
                 <span class="bool-val">false</span>
             }
@@ -422,7 +426,7 @@
             <span class="bool-val">false</span>
         };
 
-        <span class="prelude-val">Ok</span>(<span class="ident">has_leading_comments</span> <span class="op">|</span><span class="op">|</span> <span class="ident">has_trailing_comments</span> <span class="op">|</span><span class="op">|</span> <span class="ident">cutoff_has_leading_comments</span>)
+        <span class="ident">has_comments</span> <span class="op">|</span><span class="op">|</span> <span class="ident">cutoff_has_leading_comments</span>
     }
 
     <span class="doccomment">/// Filters the stack of [FlattenItem] and return only the ones that</span>
@@ -432,8 +436,8 @@
             .<span class="ident">iter</span>()
             .<span class="ident">flat_map</span>(<span class="op">|</span><span class="ident">group</span><span class="op">|</span> <span class="ident">group</span>.<span class="ident">members</span>.<span class="ident">iter</span>())
             .<span class="ident">filter_map</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ChainMember::CallExpression</span>(<span class="ident">call_expression</span>, ..) <span class="op">=</span> <span class="ident">item</span> {
-                    <span class="prelude-val">Some</span>(<span class="ident">call_expression</span>)
+                <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ChainMember::CallExpression</span> { <span class="ident">expression</span>, .. } <span class="op">=</span> <span class="ident">item</span> {
+                    <span class="prelude-val">Some</span>(<span class="ident">expression</span>)
                 } <span class="kw">else</span> {
                     <span class="prelude-val">None</span>
                 }
@@ -483,8 +487,9 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">should_merge_with_first_group</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
         <span class="ident">head_group</span>: <span class="kw-2">&amp;</span><span class="ident">MemberChainGroup</span>,
+        <span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">JsComments</span>,
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MemberChainGroup</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">should_merge</span>(<span class="ident">head_group</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>) {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">should_merge</span>(<span class="ident">head_group</span>, <span class="ident">comments</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>) {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_groups</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">groups</span>.<span class="ident">split_off</span>(<span class="number">1</span>);
             <span class="comment">// self.groups is now the head (one element), while `new_groups` is a new vector without the</span>
             <span class="comment">// first element.</span>
@@ -499,8 +504,8 @@
     <span class="doccomment">/// Here we check if the length of the groups exceeds the cutoff or there are comments</span>
     <span class="doccomment">/// This function is the inverse of the prettier function</span>
     <span class="doccomment">/// [Prettier applies]: https://github.com/prettier/prettier/blob/a043ac0d733c4d53f980aa73807a63fc914f23bd/src/language-js/print/member-chain.js#L342</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_member_call_chain</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">SyntaxResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">groups</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">cutoff</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">has_comments</span>()<span class="question-mark">?</span>)
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">is_member_call_chain</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">JsComments</span>) -&gt; <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">groups</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">cutoff</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">has_comments</span>(<span class="ident">comments</span>)
     }
 
     <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">MemberChainGroup</span><span class="op">&gt;</span> {
@@ -532,8 +537,17 @@
         <span class="self">self</span>.<span class="ident">members</span>.<span class="ident">extend</span>(<span class="ident">group</span>)
     }
 
-    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">has_comments</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="self">self</span>.<span class="ident">members</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">item</span><span class="op">|</span> <span class="ident">item</span>.<span class="ident">has_trailing_comments</span>())
+    <span class="kw">pub</span>(<span class="kw">super</span>) <span class="kw">fn</span> <span class="ident">has_comments</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">JsComments</span>) -&gt; <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">members</span>.<span class="ident">iter</span>().<span class="ident">enumerate</span>().<span class="ident">any</span>(<span class="op">|</span>(<span class="ident">index</span>, <span class="ident">member</span>)<span class="op">|</span> {
+            <span class="kw">if</span> <span class="ident">index</span> <span class="op">==</span> <span class="number">0</span> {
+                <span class="ident">comments</span>.<span class="ident">has_trailing_comments</span>(<span class="ident">member</span>.<span class="ident">syntax</span>())
+            } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">index</span> <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">members</span>.<span class="ident">len</span>() {
+                <span class="ident">comments</span>.<span class="ident">has_leading_comments</span>(<span class="ident">member</span>.<span class="ident">syntax</span>())
+                    <span class="op">|</span><span class="op">|</span> <span class="ident">comments</span>.<span class="ident">has_trailing_comments</span>(<span class="ident">member</span>.<span class="ident">syntax</span>())
+            } <span class="kw">else</span> {
+                <span class="bool-val">false</span>
+            }
+        })
     }
 }
 
@@ -548,8 +562,8 @@
         <span class="kw">let</span> <span class="ident">last</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">members</span>.<span class="ident">last</span>();
 
         <span class="kw">let</span> <span class="ident">needs_parens</span> <span class="op">=</span> <span class="ident">last</span>.<span class="ident">map_or</span>(<span class="bool-val">false</span>, <span class="op">|</span><span class="ident">last</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">last</span> {
-            <span class="ident">ChainMember::StaticMember</span>(<span class="ident">member</span>) =&gt; <span class="ident">member</span>.<span class="ident">needs_parentheses</span>(),
-            <span class="ident">ChainMember::ComputedMember</span>(<span class="ident">member</span>) =&gt; <span class="ident">member</span>.<span class="ident">needs_parentheses</span>(),
+            <span class="ident">ChainMember::StaticMember</span> { <span class="ident">expression</span>, .. } =&gt; <span class="ident">expression</span>.<span class="ident">needs_parentheses</span>(),
+            <span class="ident">ChainMember::ComputedMember</span> { <span class="ident">expression</span>, .. } =&gt; <span class="ident">expression</span>.<span class="ident">needs_parentheses</span>(),
             <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
         });
 

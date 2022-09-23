@@ -32,6 +32,19 @@
 <span id="26">26</span>
 <span id="27">27</span>
 <span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">rome_formatter::write</span>;
 
@@ -49,15 +62,28 @@
             <span class="ident">r_curly_token</span>,
         } <span class="op">=</span> <span class="ident">node</span>.<span class="ident">as_fields</span>();
 
-        <span class="macro">write!</span>(
-            <span class="ident">f</span>,
-            [
-                <span class="ident">l_curly_token</span>.<span class="ident">format</span>(),
-                <span class="ident">dotdotdot_token</span>.<span class="ident">format</span>(),
-                <span class="ident">expression</span>.<span class="ident">format</span>(),
-                <span class="ident">r_curly_token</span>.<span class="ident">format</span>()
-            ]
-        )
+        <span class="kw">let</span> <span class="ident">expression</span> <span class="op">=</span> <span class="ident">expression</span><span class="question-mark">?</span>;
+
+        <span class="kw">let</span> <span class="ident">format_inner</span> <span class="op">=</span> <span class="ident">format_with</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> {
+            <span class="macro">write!</span>(
+                <span class="ident">f</span>,
+                [
+                    <span class="ident">dotdotdot_token</span>.<span class="ident">format</span>(),
+                    <span class="ident">expression</span>.<span class="ident">format</span>(),
+                    <span class="ident">line_suffix_boundary</span>()
+                ]
+            )
+        });
+
+        <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">l_curly_token</span>.<span class="ident">format</span>()])<span class="question-mark">?</span>;
+
+        <span class="kw">if</span> <span class="ident">f</span>.<span class="ident">comments</span>().<span class="ident">has_comments</span>(<span class="ident">expression</span>.<span class="ident">syntax</span>()) {
+            <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">soft_block_indent</span>(<span class="kw-2">&amp;</span><span class="ident">format_inner</span>)])<span class="question-mark">?</span>;
+        } <span class="kw">else</span> {
+            <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">format_inner</span>])<span class="question-mark">?</span>;
+        }
+
+        <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">r_curly_token</span>.<span class="ident">format</span>()])
     }
 }
 </code></pre></div>

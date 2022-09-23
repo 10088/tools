@@ -228,12 +228,24 @@
 <span id="222">222</span>
 <span id="223">223</span>
 <span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">borrow::Cow</span>, <span class="ident">fmt</span>, <span class="ident">io</span>, <span class="ident">time::Duration</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::write</span>::{<span class="ident">Termcolor</span>, <span class="ident">Write</span>, <span class="ident">HTML</span>};
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">markup</span>, <span class="ident">Markup</span>, <span class="ident">MarkupElement</span>};
 
 <span class="doccomment">/// A stack-allocated linked-list of [MarkupElement] slices</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MarkupElements</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="ident">Root</span>,
     <span class="ident">Node</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">Self</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">MarkupElement</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>]),
@@ -286,6 +298,16 @@
         <span class="self">Self</span> {
             <span class="ident">state</span>: <span class="ident">MarkupElements::Root</span>,
             <span class="ident">writer</span>,
+        }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">wrap_writer</span><span class="op">&lt;</span><span class="lifetime">&#39;b</span>: <span class="lifetime">&#39;c</span>, <span class="lifetime">&#39;c</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="lifetime">&#39;b</span> <span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">wrap</span>: <span class="kw">impl</span> <span class="ident">FnOnce</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;b</span> <span class="kw-2">mut</span> <span class="kw">dyn</span> <span class="ident">Write</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;c</span> <span class="kw-2">mut</span> <span class="kw">dyn</span> <span class="ident">Write</span>,
+    ) -&gt; <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;c</span><span class="op">&gt;</span> {
+        <span class="ident">Formatter</span> {
+            <span class="ident">state</span>: <span class="self">self</span>.<span class="ident">state</span>,
+            <span class="ident">writer</span>: <span class="ident">wrap</span>(<span class="self">self</span>.<span class="ident">writer</span>),
         }
     }
 

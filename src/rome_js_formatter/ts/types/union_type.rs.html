@@ -159,11 +159,25 @@
 <span id="153">153</span>
 <span id="154">154</span>
 <span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::parentheses::NeedsParentheses</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils</span>::{
-    <span class="ident">has_leading_own_line_comment</span>, <span class="ident">should_hug_type</span>, <span class="ident">union_or_intersection_type_needs_parentheses</span>,
-    <span class="ident">FormatTypeMemberSeparator</span>, <span class="ident">TsIntersectionOrUnionTypeList</span>,
+    <span class="ident">should_hug_type</span>, <span class="ident">union_or_intersection_type_needs_parentheses</span>, <span class="ident">FormatTypeMemberSeparator</span>,
+    <span class="ident">TsIntersectionOrUnionTypeList</span>,
 };
 <span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">format_args</span>, <span class="ident">write</span>, <span class="ident">Buffer</span>};
 <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{<span class="ident">JsSyntaxKind</span>, <span class="ident">JsSyntaxToken</span>, <span class="ident">TsTupleTypeElementList</span>, <span class="ident">TsUnionType</span>};
@@ -196,14 +210,14 @@
             );
         }
 
-        <span class="kw">let</span> <span class="ident">has_leading_own_line_comment</span> <span class="op">=</span> <span class="ident">has_leading_own_line_comment</span>(<span class="ident">node</span>.<span class="ident">syntax</span>());
+        <span class="kw">let</span> <span class="ident">has_leading_comments</span> <span class="op">=</span> <span class="ident">f</span>.<span class="ident">comments</span>().<span class="ident">has_leading_comments</span>(<span class="ident">node</span>.<span class="ident">syntax</span>());
 
         <span class="kw">let</span> <span class="ident">should_indent</span> <span class="op">=</span> {
             <span class="kw">let</span> <span class="ident">parent_kind</span> <span class="op">=</span> <span class="ident">node</span>.<span class="ident">syntax</span>().<span class="ident">parent</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">kind</span>());
 
             <span class="comment">// These parents have indent for their content, so we don&#39;t need to indent here</span>
             <span class="op">!</span><span class="kw">match</span> <span class="ident">parent_kind</span> {
-                <span class="prelude-val">Some</span>(<span class="ident">JsSyntaxKind::TS_TYPE_ALIAS_DECLARATION</span>) =&gt; <span class="ident">has_leading_own_line_comment</span>,
+                <span class="prelude-val">Some</span>(<span class="ident">JsSyntaxKind::TS_TYPE_ALIAS_DECLARATION</span>) =&gt; <span class="ident">has_leading_comments</span>,
                 <span class="ident">parent_kind</span> =&gt; {
                     <span class="macro">matches!</span>(
                         <span class="ident">parent_kind</span>,
@@ -219,14 +233,17 @@
         };
 
         <span class="kw">let</span> <span class="ident">types</span> <span class="op">=</span> <span class="ident">format_with</span>(<span class="op">|</span><span class="ident">f</span><span class="op">|</span> {
+            <span class="kw">if</span> <span class="ident">has_leading_comments</span> {
+                <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">soft_line_break</span>()])<span class="question-mark">?</span>;
+            }
+
             <span class="macro">write!</span>(
                 <span class="ident">f</span>,
                 [
                     <span class="ident">FormatTypeSetLeadingSeparator</span> {
-                        <span class="ident">separator</span>: <span class="ident">JsSyntaxKind::PIPE</span>,
+                        <span class="ident">separator</span>: <span class="string">&quot;|&quot;</span>,
                         <span class="ident">leading_separator</span>: <span class="ident">leading_separator_token</span>.<span class="ident">as_ref</span>(),
-                        <span class="ident">leading_soft_line_break_or_space</span>: <span class="ident">should_indent</span>
-                            <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">has_leading_own_line_comment</span>,
+                        <span class="ident">leading_soft_line_break_or_space</span>: <span class="ident">should_indent</span> <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">has_leading_comments</span>,
                     },
                     <span class="ident">types</span>.<span class="ident">format</span>()
                 ]
@@ -271,6 +288,17 @@
     <span class="kw">fn</span> <span class="ident">needs_parentheses</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">item</span>: <span class="kw-2">&amp;</span><span class="ident">TsUnionType</span>) -&gt; <span class="ident">bool</span> {
         <span class="ident">item</span>.<span class="ident">needs_parentheses</span>()
     }
+
+    <span class="kw">fn</span> <span class="ident">is_suppressed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">node</span>: <span class="kw-2">&amp;</span><span class="ident">TsUnionType</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="ident">JsFormatter</span>) -&gt; <span class="ident">bool</span> {
+        <span class="ident">f</span>.<span class="ident">comments</span>().<span class="ident">mark_suppression_checked</span>(<span class="ident">node</span>.<span class="ident">syntax</span>());
+
+        <span class="kw">if</span> <span class="ident">node</span>.<span class="ident">types</span>().<span class="ident">is_empty</span>() {
+            <span class="ident">f</span>.<span class="ident">comments</span>().<span class="ident">is_suppressed</span>(<span class="ident">node</span>.<span class="ident">syntax</span>())
+        } <span class="kw">else</span> {
+            <span class="comment">// Suppression applies to first variant</span>
+            <span class="bool-val">false</span>
+        }
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">NeedsParentheses</span> <span class="kw">for</span> <span class="ident">TsUnionType</span> {
@@ -284,7 +312,7 @@
 }
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormatTypeSetLeadingSeparator</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="ident">separator</span>: <span class="ident">JsSyntaxKind</span>,
+    <span class="ident">separator</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
     <span class="ident">leading_separator</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">JsSyntaxToken</span><span class="op">&gt;</span>,
     <span class="ident">leading_soft_line_break_or_space</span>: <span class="ident">bool</span>,
 }
@@ -306,7 +334,7 @@
                     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">leading_soft_line_break_or_space</span> {
                         <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">soft_line_break_or_space</span>()])<span class="question-mark">?</span>;
                     }
-                    <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">format_inserted</span>(<span class="self">self</span>.<span class="ident">separator</span>), <span class="ident">space</span>()])
+                    <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">text</span>(<span class="self">self</span>.<span class="ident">separator</span>), <span class="ident">space</span>()])
                 });
 
                 <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">if_group_breaks</span>(<span class="kw-2">&amp;</span><span class="ident">content</span>)])

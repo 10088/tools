@@ -281,11 +281,18 @@
 <span id="275">275</span>
 <span id="276">276</span>
 <span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::js::expressions::template_chunk_element::AnyTemplateChunkElement</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::js::expressions::template_element</span>::{<span class="ident">AnyTemplateElement</span>, <span class="ident">TemplateElementOptions</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::context::TabWidth</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
+
 <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{
     <span class="ident">JsAnyExpression</span>, <span class="ident">JsAnyLiteralExpression</span>, <span class="ident">JsAnyTemplateElement</span>, <span class="ident">JsLanguage</span>,
     <span class="ident">JsTemplateElementList</span>, <span class="ident">TsAnyTemplateElement</span>, <span class="ident">TsTemplateElementList</span>,
@@ -311,7 +318,7 @@
 
 <span class="kw">impl</span> <span class="ident">Format</span><span class="op">&lt;</span><span class="ident">JsFormatContext</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AnyTemplateElementList</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="ident">JsFormatContext</span><span class="op">&gt;</span>) -&gt; <span class="ident">FormatResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">layout</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_simple</span>() {
+        <span class="kw">let</span> <span class="ident">layout</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">is_simple</span>(<span class="ident">f</span>.<span class="ident">comments</span>()) {
             <span class="ident">TemplateElementLayout::SingleLine</span>
         } <span class="kw">else</span> {
             <span class="ident">TemplateElementLayout::Fit</span>
@@ -370,7 +377,7 @@
     <span class="doccomment">/// Simple expressions are:</span>
     <span class="doccomment">/// * Identifiers: `this`, `a`</span>
     <span class="doccomment">/// * Members: `a.b`, `a[b]`, `a.b[c].d`, `a.b[5]`, `a.b[&quot;test&quot;]`</span>
-    <span class="kw">fn</span> <span class="ident">is_simple</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">is_simple</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">JsComments</span>) -&gt; <span class="ident">bool</span> {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">AnyTemplateElementList::JsTemplateElementList</span>(<span class="ident">list</span>) =&gt; {
                 <span class="kw">if</span> <span class="ident">list</span>.<span class="ident">is_empty</span>() {
@@ -384,7 +391,9 @@
 
                 <span class="ident">expression_elements</span>.<span class="ident">all</span>(<span class="op">|</span><span class="ident">expression_element</span><span class="op">|</span> {
                     <span class="kw">match</span> <span class="ident">expression_element</span>.<span class="ident">expression</span>() {
-                        <span class="prelude-val">Ok</span>(<span class="ident">expression</span>) =&gt; <span class="ident">is_simple_member_expression</span>(<span class="ident">expression</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>),
+                        <span class="prelude-val">Ok</span>(<span class="ident">expression</span>) =&gt; {
+                            <span class="ident">is_simple_member_expression</span>(<span class="ident">expression</span>, <span class="ident">comments</span>).<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>)
+                        }
                         <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="bool-val">false</span>,
                     }
                 })
@@ -425,11 +434,14 @@
     <span class="ident">AnyTemplateElementOrChunk</span> <span class="op">=</span> <span class="ident">AnyTemplateElement</span> <span class="op">|</span> <span class="ident">AnyTemplateChunkElement</span>
 }
 
-<span class="kw">fn</span> <span class="ident">is_simple_member_expression</span>(<span class="ident">expression</span>: <span class="ident">JsAnyExpression</span>) -&gt; <span class="ident">SyntaxResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">is_simple_member_expression</span>(
+    <span class="ident">expression</span>: <span class="ident">JsAnyExpression</span>,
+    <span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">JsComments</span>,
+) -&gt; <span class="ident">SyntaxResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">current</span> <span class="op">=</span> <span class="ident">expression</span>;
 
     <span class="kw">loop</span> {
-        <span class="kw">if</span> <span class="ident">current</span>.<span class="ident">syntax</span>().<span class="ident">has_comments_direct</span>() {
+        <span class="kw">if</span> <span class="ident">comments</span>.<span class="ident">has_comments</span>(<span class="ident">current</span>.<span class="ident">syntax</span>()) {
             <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>);
         }
 

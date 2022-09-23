@@ -34,14 +34,11 @@
 <span id="28">28</span>
 <span id="29">29</span>
 <span id="30">30</span>
-<span id="31">31</span>
-<span id="32">32</span>
-<span id="33">33</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">rome_formatter::write</span>;
 
+<span class="kw">use</span> <span class="ident">rome_js_syntax::JsLabeledStatementFields</span>;
 <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{<span class="ident">JsAnyStatement</span>, <span class="ident">JsLabeledStatement</span>};
-<span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{<span class="ident">JsLabeledStatementFields</span>, <span class="ident">JsSyntaxKind</span>};
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormatJsLabeledStatement</span>;
@@ -59,10 +56,7 @@
         <span class="kw">match</span> <span class="ident">body</span><span class="question-mark">?</span> {
             <span class="ident">JsAnyStatement::JsEmptyStatement</span>(<span class="ident">empty</span>) =&gt; {
                 <span class="comment">// If the body is an empty statement, force semicolon insertion</span>
-                <span class="macro">write!</span>(
-                    <span class="ident">f</span>,
-                    [<span class="ident">empty</span>.<span class="ident">format</span>(), <span class="ident">format_inserted</span>(<span class="ident">JsSyntaxKind::SEMICOLON</span>)]
-                )
+                <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">empty</span>.<span class="ident">format</span>(), <span class="ident">text</span>(<span class="string">&quot;;&quot;</span>)])
             }
             <span class="ident">body</span> =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">space</span>(), <span class="ident">body</span>.<span class="ident">format</span>()])

@@ -28,7 +28,7 @@
 <span id="22">22</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils::node_has_leading_newline</span>;
-<span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{<span class="ident">JsSyntaxKind</span>, <span class="ident">TsEnumMemberList</span>};
+<span class="kw">use</span> <span class="ident">rome_js_syntax::TsEnumMemberList</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormatTsEnumMemberList</span>;
@@ -44,7 +44,7 @@
         } <span class="kw">else</span> {
             <span class="ident">soft_line_break_or_space</span>()
         })
-        .<span class="ident">entries</span>(<span class="ident">node</span>.<span class="ident">format_separated</span>(<span class="ident">JsSyntaxKind::COMMA</span>).<span class="ident">nodes_grouped</span>())
+        .<span class="ident">entries</span>(<span class="ident">node</span>.<span class="ident">format_separated</span>(<span class="string">&quot;,&quot;</span>).<span class="ident">nodes_grouped</span>())
         .<span class="ident">finish</span>()
     }
 }
